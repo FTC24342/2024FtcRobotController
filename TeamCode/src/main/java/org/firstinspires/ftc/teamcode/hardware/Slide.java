@@ -47,11 +47,14 @@ public class Slide {
     }
 
     public void MoveTo(double inches, double power) {
-        //move to to provided inches
+        int pos = (int) (inches*ticksPerInch);
+        motor.setTargetPosition(pos);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(Math.min(power, maxSpeed));
     }
     public  void Stop() {
         //stop the motor
-        motor.setTargetPosition(0);
+        motor.setTargetPosition(motor.getCurrentPosition());
         motor.setPower(0);
     }
 
