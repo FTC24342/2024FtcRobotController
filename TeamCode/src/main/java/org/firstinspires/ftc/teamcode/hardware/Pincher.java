@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.hardware;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-public class Intake {
+public class Pincher {
     private Servo axis1 = null;
     private Servo axis2 = null;
     private Servo pinch = null;
@@ -15,8 +14,8 @@ public class Intake {
     }
     public void GoToReadyPosition() {
         // make arm ready to pickup sample/specimen
-        axis1.setPosition(0.5);
-        axis2.setPosition(0.5);
+        axis1.setPosition(0.85);
+        axis2.setPosition(1.0);
         pinch.setPosition(0.5);//open
     }
     public void GoToPickupPosition() {
@@ -27,20 +26,22 @@ public class Intake {
     }
     public void GoToDrivePosition() {
         // make arm ready to pickup sample/specimen
-        axis1.setPosition(0.5);
-        axis2.setPosition(0.5);
-        pinch.setPosition(0.5);//close
+        axis1.setPosition(0.3);
+        axis2.setPosition(0.3);
+        pinch.setPosition(0.1);//close
     }
     public void Pickup() {
         // bring arm wrist up so we can drive without issues
-        axis1.setPosition(0.5);
-        axis2.setPosition(0.5);
-        pinch.setPosition(0.5);//close
+        axis1.setPosition(1);
+        axis2.setPosition(1);
+        // time delay
+        pinch.setPosition(0.1);//close
     }
     public void DropOff() {
         // bring arm wrist up to main claw to transfer
-        axis1.setPosition(0.5);
-        axis2.setPosition(0.5);
+        axis1.setPosition(0.3);
+        axis2.setPosition(0.3);
+        // time delay
         pinch.setPosition(0.5);//open
     }
 }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.UtilityOctoQuadConfigMenu;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -8,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Slide {
     private DcMotorEx motor = null;
     private String motorName = "";
-    private int maxTicks = 0;
+    public int maxTicks = 0;
     private double maxSpeed = 0.0;
     private double ticksPerInch = 0;
     private ExtendMotorDirection extendMotorDirection = ExtendMotorDirection.Forward;
@@ -26,6 +28,8 @@ public class Slide {
         motor = hardwareMap.get(DcMotorEx.class, motorName);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setDirection(extendMotorDirection == ExtendMotorDirection.Forward ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+
+
     }
 
     public void Extend(double power) {
