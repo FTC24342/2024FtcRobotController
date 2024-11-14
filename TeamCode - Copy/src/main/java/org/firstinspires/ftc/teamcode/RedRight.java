@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.internal.network.WifiUtil;
 import org.firstinspires.ftc.teamcode.hardware.MecanumEncoder;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardware.Pincher;
-import org.firstinspires.ftc.teamcode.hardware.Slide;
 
 @Autonomous(name="Red Right")
 public class RedRight extends LinearOpMode {
@@ -16,20 +14,13 @@ public class RedRight extends LinearOpMode {
     private MecanumEncoder drive = new MecanumEncoder(this);
     private String TESTBOT = "24342-RC-test";
     private String wifiSsid = "";
-    private Slide lift = new Slide("lift", Slide.ExtendMotorDirection.Reverse, 1300, 1.0, 114.28);
-    private Slide slide = new Slide("slide", Slide.ExtendMotorDirection.Forward, 1300, 1.0,113.66);
     private IMU imu;
-    private Pincher pincher = new Pincher();
-
     private Telemetry.Item debugOutout = null;
     @Override
     public void runOpMode()  throws InterruptedException
     {
         wifiSsid = WifiUtil.getConnectedSsid();
-        lift.Init(hardwareMap);
-        slide.Init(hardwareMap);
-        pincher.Init(hardwareMap);
-        long start = System.currentTimeMillis();
+
 
         // run once when init is pressed
         drive.initHardware(this.hardwareMap, wifiSsid.equals(TESTBOT) ? MecanumEncoder.Bot.TestBot : MecanumEncoder.Bot.CompBot);
@@ -41,19 +32,28 @@ public class RedRight extends LinearOpMode {
 
         // After we are done initializing our code, we wait for Start button.
         waitForStart();
-        lift.MoveTo(16,1);
-        drive.driveBackwardInches(0.5, 27.5, 10);
-        lift.MoveTo(12,1);
-        Thread.sleep(800);
-        drive.driveForwardInches(0.5, 13, 10);
-        drive.driveLeftInches(0.5,45, 10);
-        Thread.sleep(800);
+
+        // Start button pressed, off we go.
+        // move off the wall
+        drive.driveForwardInches(0.4,2, 15.0);
+        // move to in front of first sample and push it into observation
+        drive.driveRightInches(0.4,21, 15.0);
+        drive.driveForwardInches(0.4,51, 15.0);
+        drive.driveRightInches(0.4,15, 15.0);
+        drive.driveBackwardInches(0.4,48, 15.0);
+        // go forward and then right and push the 2nd sample into observation
+        drive.driveForwardInches(0.4,46, 15.0);
+        drive.driveRightInches(0.4,7.5, 15.0);
+        drive.driveBackwardInches(0.4,46, 15.0);
+        // repeat the above^^^^
+        drive.driveForwardInches(0.4,46, 15.0);
+        drive.driveRightInches(0.4,8, 15.0);
+        drive.driveBackwardInches(0.4,46, 15.0);
 
 
 
-
-
-
+//        drive.driveForwardInches(0.4,52, 15.0);
+//        drive.rotateCounterClockwise();
 
         drive.stop();
     }

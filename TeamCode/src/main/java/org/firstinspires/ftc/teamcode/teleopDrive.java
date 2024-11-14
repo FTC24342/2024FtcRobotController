@@ -16,8 +16,8 @@ public class teleopDrive extends OpMode {
     private String TESTBOT = "24342-B-RC";
     private Telemetry.Item telPathDebug = null;
     private MecanumEncoder drive = new MecanumEncoder(this);
-    private Slide lift = new Slide("lift", Slide.ExtendMotorDirection.Forward, 1300, 1.0, 114.28);
-    private Slide slide = new Slide("slide", Slide.ExtendMotorDirection.Reverse, 5, 1.0,114);
+    private Slide lift = new Slide("lift", Slide.ExtendMotorDirection.Reverse, 1300, 1.0, 114.28);
+    private Slide slide = new Slide("slide", Slide.ExtendMotorDirection.Forward, 1300, 1.0,113.66);
     private Pincher pincher = new Pincher();
     private String wifiSsid = "";
 
@@ -34,15 +34,19 @@ public class teleopDrive extends OpMode {
         //
 
         //determine if we are extended or retracted
-        boolean extended = slide.GetExtendedInches() > 10;
+        boolean extended = slide.GetExtendedInches() < 10;
+        //telPathDebug = telemetry.addData(String.valueOf(slide.GetExtendedInches()));
 
-        if(!gamepad1.right_bumper && gamepad1.right_bumper) {
+        if(!prevGamepad1.right_bumper && currGamepad1.right_bumper) {
             //extend the intake slide
             slide.MoveTo(11.0, 1);
+            pincher.GoToReadyPosition();
         }
-        else if(!gamepad1.left_bumper && gamepad1.left_bumper) {
+        else if(!prevGamepad1.left_bumper && currGamepad1.left_bumper) {
             //retract the intake slide
             slide.MoveTo(0.0, 1);
+            pincher.GoToDrivePosition();
+
         }
 
         if(extended && prevGamepad1.right_trigger < .1 && currGamepad1.right_trigger >= .1) {
@@ -54,24 +58,25 @@ public class teleopDrive extends OpMode {
             pincher.GoToReadyPosition();
         }
 
-        if(extended) {
-            //place intake in ready position
-            pincher.GoToReadyPosition();
-        }
-        else {
-            //place in the drive position
-            pincher.GoToDrivePosition();
-        }
+//        if(extended) {
+//            //place intake in ready position
+//            pincher.GoToDrivePosition();
+//        }
+//        else {
+//            //place in the drive position
+//            pincher.GoToReadyPosition();
+//
+//        }
     }
 
     public void ProcessLiftSlide() {
-        if(!prevGamepad1.right_bumper && currGamepad1.right_bumper) {
+        if(!prevGamepad2.right_bumper && currGamepad2.right_bumper) {
             lift.MoveTo(16,1);
         }
-        else if(!prevGamepad1.circle && currGamepad1.circle) {
-            lift.MoveTo(12,1);
+        else if(!prevGamepad2.circle && currGamepad2.left_bumper) {
+            lift.MoveTo(0,1);
         }
-        else if(!prevGamepad1.x && currGamepad1.x) {
+        else if(!prevGamepad2.x && currGamepad2.x) {
             lift.MoveTo(12,1);
         }
     }
@@ -81,6 +86,12 @@ public class teleopDrive extends OpMode {
             pincher.Pickup();
         } else if (prevGamepad1.left_trigger >= 0.1) {
             pincher.DropOff();
+        }
+        if (!prevGamepad1.right_stick_button && currGamepad1.right_stick_button && pincher.isOpen) {
+            pincher.PincherClose();
+        }
+        else if (!prevGamepad1.right_stick_button && currGamepad1.right_stick_button && !pincher.isOpen){
+            pincher.PincherOpen();
         }
 
     }
