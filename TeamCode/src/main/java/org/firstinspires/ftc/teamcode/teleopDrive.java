@@ -25,7 +25,7 @@ public class teleopDrive extends OpMode {
     private Gamepad currGamepad1 = new Gamepad();
     private Gamepad prevGamepad2 = null;
     private Gamepad currGamepad2 = new Gamepad();
-
+//    public void ProcessOtherInputs() {}
     public void ProcessSlide() {
         //right_bumper - slide 100% extended, and pickup mechanism in ready position
         //left_bumper - slide 0% extended, and pickup mechanism in the drive position
@@ -69,6 +69,12 @@ public class teleopDrive extends OpMode {
 //        }
     }
 
+    public void ProcessImuYawReset() {
+        if (!prevGamepad1.options && currGamepad1.options) {
+            drive.resetYaw();
+        }
+    }
+
     public void ProcessLiftSlide() {
         if(!prevGamepad2.right_bumper && currGamepad2.right_bumper) {
             lift.MoveTo(16,1);
@@ -104,11 +110,10 @@ public class teleopDrive extends OpMode {
         // run once when init is pressed
         wifiSsid = WifiUtil.getConnectedSsid();
 
-        drive.initHardware(hardwareMap, wifiSsid.equals(TESTBOT) ? MecanumEncoder.Bot.TestBot : MecanumEncoder.Bot.CompBot);
+        drive.initHardware(hardwareMap, wifiSsid.equals(TESTBOT) ? MecanumEncoder.Bot.TestBot : MecanumEncoder.Bot.CompBot, MecanumEncoder.StartSidePointingToOtherSide.Back);
         telemetry.clearAll();
         telemetry.setAutoClear(false);
         telPathDebug = telemetry.addData("debug", "");
-        telPathDebug.setValue(slide.maxTicks);
 
         pincher.GoToDrivePosition();
     }
@@ -135,6 +140,7 @@ public class teleopDrive extends OpMode {
 
         drive.driverInput(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, 1.0, MecanumEncoder.DriveMode.FieldCentric);
 
+        ProcessImuYawReset();
         ProcessSlide();
         ProcessLiftSlide();
         ProcessPincher();

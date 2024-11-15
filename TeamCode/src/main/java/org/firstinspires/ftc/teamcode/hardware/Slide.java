@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Slide {
     private DcMotorEx motor = null;
     private String motorName = "";
-    public int maxTicks = 0;
+    private int maxTicks = 0;
     private double maxSpeed = 0.0;
     private double ticksPerInch = 0;
     private ExtendMotorDirection extendMotorDirection = ExtendMotorDirection.Forward;

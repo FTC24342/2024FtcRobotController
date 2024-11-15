@@ -32,7 +32,7 @@ public class RedLeft extends LinearOpMode {
 
 
         // run once when init is pressed
-        drive.initHardware(this.hardwareMap, wifiSsid.equals(TESTBOT) ? MecanumEncoder.Bot.TestBot : MecanumEncoder.Bot.CompBot);
+        drive.initHardware(this.hardwareMap, wifiSsid.equals(TESTBOT) ? MecanumEncoder.Bot.TestBot : MecanumEncoder.Bot.CompBot, MecanumEncoder.StartSidePointingToOtherSide.Back);
 //        Bartouch = hardwareMap.get(Servo.class, "bartouch");
         drive.resetYaw();
         telemetry.clearAll();

@@ -30,7 +30,7 @@ public class RedLeftTest extends LinearOpMode {
 
 
         // run once when init is pressed
-        drive.initHardware(this.hardwareMap, wifiSsid.equals(TESTBOT) ? MecanumEncoder.Bot.TestBot : MecanumEncoder.Bot.CompBot);
+        drive.initHardware(this.hardwareMap, wifiSsid.equals(TESTBOT) ? MecanumEncoder.Bot.TestBot : MecanumEncoder.Bot.CompBot, MecanumEncoder.StartSidePointingToOtherSide.Back);
         drive.resetYaw();
         telemetry.clearAll();
         telemetry.setAutoClear(false);

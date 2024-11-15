@@ -12,6 +12,24 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class MecanumEncoder {
+    public enum StartSidePointingToOtherSide {Front, Back, Left, Right};
+    StartSidePointingToOtherSide startSide = StartSidePointingToOtherSide.Front;
+    private double GetAdjustmentRadians() {
+        if(startSide == StartSidePointingToOtherSide.Front) {
+            return 0;
+        }
+        else if (startSide == StartSidePointingToOtherSide.Back) {
+            return +3.14159;
+        }
+        else if(startSide == StartSidePointingToOtherSide.Left) {
+            return +1.5708;
+        }
+        else if(startSide == StartSidePointingToOtherSide.Right) {
+            return +4.71239;
+        }
+        return 0;
+    }
+
     private class BotSettings {
         BotSettings(double countsPerMoterRev, double driveGearReduction, double wheelDiameterInches, RevHubOrientationOnRobot revHubOrientation){
             this.COUNTS_PER_MOTOR_REV = countsPerMoterRev;
@@ -76,13 +94,14 @@ public class MecanumEncoder {
         this.imu = imu;
     }
 
-    public void initHardware(HardwareMap hardwareMap, Bot bot)
+    public void initHardware(HardwareMap hardwareMap, Bot bot, StartSidePointingToOtherSide startSide)
     {
         //Read controllerhubid.txt at root of hub file system
         //Filepath for Windows = Control Hub v1.0\Internal shared storage\controllerhubid.txt
         //Read value in file test = test bot profile
         //Read value in file comp = comp bot profile
-                        //
+
+        this.startSide = startSide;
         settings = (bot == Bot.TestBot) ? testBot : compBot;
         frontLeft  = hardwareMap.get(DcMotorEx.class, "flmotor");
         frontRight = hardwareMap.get(DcMotorEx.class, "frmotor");
@@ -132,6 +151,8 @@ public class MecanumEncoder {
         if(driveMode == DriveMode.FieldCentric)
         {
             botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            //adjust based on the start position
+            botHeading += GetAdjustmentRadians();
         }
 
         double rotX = 0.0;
