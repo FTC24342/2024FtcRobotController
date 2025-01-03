@@ -4,18 +4,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
+
 
 public class Slide {
-    private DcMotorEx motor = null;
+    public DcMotorEx motor = null;
+    private TouchSensor zeroTouch = null;
     private String motorName = "";
+    private String zeroTouchName = "";
     private int maxTicks = 0;
     private double maxSpeed = 0.0;
     private double ticksPerInch = 0;
     private ExtendMotorDirection extendMotorDirection = ExtendMotorDirection.Forward;
-
+    private boolean isHome = false;
     public enum ExtendMotorDirection {Forward, Reverse};
-    public Slide(String motor, ExtendMotorDirection extendMotorDirection, int maxTicks, double maxSpeed, double ticksPerInch) {
+    public Slide(String motor, String zeroTouch, ExtendMotorDirection extendMotorDirection, int maxTicks, double maxSpeed, double ticksPerInch) {
         this.motorName = motor;
+        this.zeroTouchName = zeroTouch;
         this.extendMotorDirection = extendMotorDirection;
         this.maxTicks = maxTicks;
         this.maxSpeed = maxSpeed;
@@ -24,7 +30,11 @@ public class Slide {
 
     public void Init(HardwareMap hardwareMap) {
         motor = hardwareMap.get(DcMotorEx.class, motorName);
+        if(zeroTouchName.length() > 0) {
+            zeroTouch = hardwareMap.get(TouchSensor.class, zeroTouchName);
+        }
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setDirection(extendMotorDirection == ExtendMotorDirection.Forward ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
     }
 
@@ -37,9 +47,18 @@ public class Slide {
 
     public void Retract(double power) {
         //extend with the power
-        motor.setTargetPosition(0);
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(Math.min(power, maxSpeed));
+        if (zeroTouch != null) {
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setDirection(extendMotorDirection == ExtendMotorDirection.Forward ? DcMotorSimple.Direction.REVERSE  : DcMotorSimple.Direction.FORWARD);
+            motor.setPower(Math.min(power, maxSpeed));
+
+        }
+        else {
+            motor.setTargetPosition(0);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setPower(Math.min(power, maxSpeed));
+        }
+
     }
 
     public double GetExtendedInches() {
@@ -48,11 +67,32 @@ public class Slide {
 
     public void MoveTo(double inches, double power) {
         //move to to provided inches
+
+        motor.setDirection(extendMotorDirection == ExtendMotorDirection.Forward ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        int targetTicks = (int) (inches*ticksPerInch);
+        targetTicks = Math.max(0, targetTicks);
+        targetTicks = Math.min(targetTicks, maxTicks);
+        motor.setTargetPosition(targetTicks);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(Math.min(power, maxSpeed));
+    }
+
+    public void ProcessLoop() {
+        if(!isHome && zeroTouch != null && zeroTouch.isPressed()) {
+            motor.setPower(0);
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            isHome = true;
+        }else if(isHome && zeroTouch != null && !zeroTouch.isPressed()) {
+            isHome = false;
+        }
     }
     public  void Stop() {
         //stop the motor
         motor.setTargetPosition(0);
         motor.setPower(0);
+    }
+    public void resetEncoder() {
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 }
