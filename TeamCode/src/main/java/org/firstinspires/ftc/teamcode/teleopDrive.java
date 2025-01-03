@@ -1,76 +1,171 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.robotcore.internal.network.WifiUtil;
-import org.firstinspires.ftc.teamcode.hardware.MecanumEncoder;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+
+import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.Slide;
+import org.firstinspires.ftc.teamcode.hardware.MecanumEncoder;
+import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
 
-@TeleOp
+@TeleOp(name = "Main Teleop")
 public class teleopDrive extends OpMode {
+    private MecanumDrive drive = null;
+    private Intake intake = new Intake();  // get the intake class
+    private Slide intakeSlide = new Slide("slide", "", Slide.ExtendMotorDirection.Forward, 1300, 1.0, 114.28);
+    private Slide clawSlide = new Slide("lift", "resetlift", Slide.ExtendMotorDirection.Reverse, 3192, 1.0,86); //68.568
+    private SpecimenGrabber specimanGrabber = new SpecimenGrabber();
+    private Telemetry.Item output = null;
+    private Telemetry.Item output2 = null;
+    Gamepad prevGamepad1 = new Gamepad();
+    Gamepad currGamepad1 = new Gamepad();
+    Gamepad prevGamepad2 = new Gamepad();
+    Gamepad currGamepad2 = new Gamepad();
+    Intake.IntakePositon desiredPosition = Intake.IntakePositon.HOME;
 
-    private String TESTBOT = "24342-RC";
-    private Telemetry.Item telPathDebug = null;
-    private MecanumEncoder drive = new MecanumEncoder(this);
-    private Slide intakeSlide = new Slide("intakeslide", "", Slide.ExtendMotorDirection.Forward, 1300, 1.0, 114.28);
-    private Slide clawSlide = new Slide("clawslide", "", Slide.ExtendMotorDirection.Reverse, 4500, 1.0,114.28);
-    private String wifiSsid = "";
-
-    public void processClawArmUpDown() {
-        if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
-            clawSlide.Stop();
-        }
-        else if (gamepad2.left_trigger != 0 && gamepad2.right_trigger == 0){
-            clawSlide.Retract(gamepad2.left_trigger);
-        }
-        else if (gamepad2.right_trigger != 0 && gamepad2.left_trigger == 0) {
-            clawSlide.Extend(gamepad2.right_trigger);
+    public void processSpecimanGrabber() {
+        if(currGamepad2.x && !prevGamepad2.x) {
+            specimanGrabber.processOpenClose();
+        } else if (currGamepad2.y && !prevGamepad2.y){
+            clawSlide.MoveTo(44, 1);
         }
     }
-    public void processIntakeInOut() {
-        if (gamepad1.left_trigger == 0 && gamepad1.right_trigger == 0) {
+    private void processIntake() {
+        //hold gp1.right_bumper for sample in
+        //hold gp1.left_bumper for sample out
+        //release either for sample stop
+        //toggle between drive and pickup positions with gp1.y
+
+
+        //toggle between drive and pickup positions
+        if (currGamepad1.y && !prevGamepad1.y) {
+            if(desiredPosition == Intake.IntakePositon.DRIVE){
+                desiredPosition = Intake.IntakePositon.PICKUP;
+            }
+            else if(desiredPosition == Intake.IntakePositon.PICKUP || desiredPosition == Intake.IntakePositon.HOME) {
+                desiredPosition = Intake.IntakePositon.DRIVE;
+            }
+        }
+
+        //send intake commands based on desired state
+        if (desiredPosition == Intake.IntakePositon.DRIVE){
+            intake.goToDrive();
+        } else if (desiredPosition == Intake.IntakePositon.PICKUP) {
+            intake.goToPickup();
+        }
+
+        //in/out/stop of sample
+        if (currGamepad1.right_bumper && !currGamepad1.left_bumper) {
+            intake.intakeIn();
+        }
+        else if (!currGamepad1.right_bumper && currGamepad1.left_bumper) {
+            intake.intakeOut();
+        }
+        else if (currGamepad1.right_bumper && currGamepad1.left_bumper) {
+            intake.intakeStop();
+        }
+        else if (!currGamepad1.right_bumper && !currGamepad1.left_bumper) {
+            intake.intakeStop();
+        }
+    }
+
+    private void processSlide() {
+        if (currGamepad1.left_trigger == 0 && currGamepad1.right_trigger == 0) {
             intakeSlide.Stop();
         }
-        else if (gamepad1.left_trigger != 0 && gamepad1.right_trigger == 0){
-            intakeSlide.Retract(gamepad1.left_trigger);
+        else if (currGamepad1.left_trigger != 0 && currGamepad1.right_trigger == 0){
+            intakeSlide.Retract(currGamepad1.left_trigger);
         }
-        else if (gamepad1.right_trigger != 0 && gamepad1.left_trigger == 0) {
-            intakeSlide.Extend(gamepad1.right_trigger);
+        else if (currGamepad1.right_trigger != 0 && currGamepad1.left_trigger == 0) {
+            intakeSlide.Extend(currGamepad1.right_trigger);
+        }
+        else if(currGamepad1.left_trigger > 0 && currGamepad1.right_trigger > 0) {
+            intakeSlide.Stop();
+        }
+    }
+
+
+    public void processClawStop() {
+        if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
+            clawSlide.Stop();
+        }
+    }
+    public void processClawManualDown() {
+        if(currGamepad2.left_trigger > 0.1) {
+            clawSlide.Retract(currGamepad1.left_trigger);
+        }
+    }
+
+    public void processLiftDPad() {
+        if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
+            clawSlide.MoveTo(16.5,1);
+        }
+        else if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) {
+            //hang specimen
+            hangSpecimen();
+
         }
     }
     @Override
     public void init() {
-        //Continue defining motors
-        intakeSlide.Init(hardwareMap);
+        prevGamepad1.copy(gamepad1);
+        currGamepad1.copy(gamepad1);
+        prevGamepad2.copy(gamepad2);
         clawSlide.Init(hardwareMap);
-        // run once when init is pressed
-        wifiSsid = WifiUtil.getConnectedSsid();
-
-        drive.initHardware(hardwareMap, wifiSsid.equals(TESTBOT) ? MecanumEncoder.Bot.TestBot : MecanumEncoder.Bot.CompBot);
-        telemetry.clearAll();
-        telemetry.setAutoClear(false);
-        telPathDebug = telemetry.addData("PathDebug:", "");
-
-
-
-
+        output = telemetry.addData("ticks", clawSlide.motor.getCurrentPosition());
+        currGamepad2.copy(gamepad2);
+        specimanGrabber.Init(hardwareMap);
+        intake.Init(hardwareMap);
+        intakeSlide.Init(hardwareMap);
+        specimanGrabber.Init(hardwareMap);
+        clawSlide.Init(hardwareMap);
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
     }
 
-    @Override
-    public void init_loop() {
-        // add stuff here for the init loop
-        telPathDebug.setValue(wifiSsid);
-        telemetry.update();
-    }
+
 
     @Override
     public void loop() {
-        // runs while in play
-        drive.driverInput(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, 1.0, MecanumEncoder.DriveMode.FieldCentric);
-        processIntakeInOut();
-        processClawArmUpDown();
+        currGamepad1.copy(gamepad1);
+        currGamepad2.copy(gamepad2);
+        output.addData("ticks", clawSlide.motor.getCurrentPosition());
+        drive.setPowersFeildCentric(new PoseVelocity2d(
+                new Vector2d(
+                        currGamepad1.left_stick_x,
+                        -currGamepad1.left_stick_y
+                ),
+                currGamepad1.right_stick_x
+        ), 1.0);
+        processIntake();
+        processSlide();
+        processClawStop();
+        processLiftDPad();
+        processClawManualDown();
+        processSpecimanGrabber();
+        prevGamepad1.copy(currGamepad1);
+        prevGamepad2.copy(currGamepad2);
+
     }
-}
+    //###################ACTIONS #####################
+    //BEGIN ACTIONS
+    public void hangSpecimen() {
+        try {
+            clawSlide.MoveTo(0, 0.75);
+            Thread.sleep(250);
+            specimanGrabber.Open();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }}
+//END ACTIONS
+
+
+
+
 
