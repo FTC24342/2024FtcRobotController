@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.Slide;
 
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
@@ -24,7 +25,7 @@ public class SpecimenAuto4 extends LinearOpMode {
 
     private MecanumDrive drive = null;
     private Telemetry.Item debugOutout = null;
-
+    private Intake intake = new Intake();
     private Slide clawSlide = new Slide("lift", "resetlift", Slide.ExtendMotorDirection.Reverse, 2600, 1.0,68.568);
     private SpecimenGrabber specimenGrabber = new SpecimenGrabber();
 
@@ -93,7 +94,7 @@ public class SpecimenAuto4 extends LinearOpMode {
         drive = new MecanumDrive(this.hardwareMap, new Pose2d(-62.175, -3, 0));
         clawSlide.Init(hardwareMap);
         specimenGrabber.Init(hardwareMap);
-
+        intake.Init(hardwareMap);
         telemetry.clearAll();
         telemetry.setAutoClear(false);
         //debugOutout = telemetry.addData("Debug:", imu.getRobotYawPitchRollAngles().toString());

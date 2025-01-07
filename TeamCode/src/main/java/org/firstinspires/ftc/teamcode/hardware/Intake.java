@@ -19,11 +19,11 @@ public class Intake {
     public IntakePositon currentPosition = IntakePositon.UNKNOWN;
 
     public double axis1Home = 0.033333;
-    public double axis2Home = 0.052833;
-    public double axis1Drive = 0.033333;
-    public double axis2Drive = 0.873333;
-    public double axis1Pickup = 0.795556;
-    public double axis2Pickup = 1.0;
+    public double axis2Home = 0.6;
+    public double axis1Drive = 0.09;
+    public double axis2Drive = 0.8;
+    public double axis1Pickup = 0.828333;
+    public double axis2Pickup = 0.921667;
     public double positionMargin = 0.005; //this is to allow for logical positions that can not be exactly meet in hardware
 
     public void Init(HardwareMap hardwareMap) {
