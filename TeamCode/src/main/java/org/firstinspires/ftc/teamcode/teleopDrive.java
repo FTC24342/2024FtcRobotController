@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.Slide;
 import org.firstinspires.ftc.teamcode.hardware.MecanumEncoder;
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
+import org.firstinspires.ftc.teamcode.hardware.Sweeper;
 
 @TeleOp(name = "Main Teleop")
 public class teleopDrive extends OpMode {
@@ -21,6 +22,7 @@ public class teleopDrive extends OpMode {
     private Slide intakeSlide = new Slide("slide", "", Slide.ExtendMotorDirection.Forward, 1300, 1.0, 114.28);
     private Slide clawSlide = new Slide("lift", "resetlift", Slide.ExtendMotorDirection.Reverse, 3192, 1.0,86); //68.568
     private SpecimenGrabber specimanGrabber = new SpecimenGrabber();
+    private Sweeper sweeper = new Sweeper();
     private Telemetry.Item output = null;
     private Telemetry.Item output2 = null;
     Gamepad prevGamepad1 = new Gamepad();
@@ -75,6 +77,14 @@ public class teleopDrive extends OpMode {
         }
     }
 
+    private void processSweeper() {
+        if (currGamepad1.x && !prevGamepad1.x) {
+            sweeper.sweeperOut();
+        }
+        else if(!currGamepad1.x && prevGamepad1.x) {
+            sweeper.sweeperIn();
+        }
+    }
     private void processSlide() {
         if (currGamepad1.left_trigger == 0 && currGamepad1.right_trigger == 0) {
             intakeSlide.Stop();
@@ -124,6 +134,7 @@ public class teleopDrive extends OpMode {
         intakeSlide.Init(hardwareMap);
         specimanGrabber.Init(hardwareMap);
         clawSlide.Init(hardwareMap);
+        sweeper.init(hardwareMap);
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
     }
 
@@ -148,6 +159,7 @@ public class teleopDrive extends OpMode {
         processSlide();
         processClawStop();
         processLiftDPad();
+        processSweeper();
         processClawManualDown();
         processSpecimanGrabber();
         prevGamepad1.copy(currGamepad1);
