@@ -45,7 +45,7 @@ public class TestPickupServos extends OpMode {
 
     @Override
     public void start() {
-        axis1.setPosition(0.9);
+        axis1.setPosition(0.8);
         axis2.setPosition(0.9);
 
     }

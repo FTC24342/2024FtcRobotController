@@ -121,7 +121,6 @@ public class teleopDrive extends OpMode {
         output = telemetry.addData("ticks", clawSlide.motor.getCurrentPosition());
         currGamepad2.copy(gamepad2);
         specimanGrabber.Init(hardwareMap);
-        intake.Init(hardwareMap);
         intakeSlide.Init(hardwareMap);
         specimanGrabber.Init(hardwareMap);
         clawSlide.Init(hardwareMap);
@@ -129,7 +128,10 @@ public class teleopDrive extends OpMode {
     }
 
 
-
+    @Override
+    public void start() {
+        intake.Init(hardwareMap);
+    }
     @Override
     public void loop() {
         currGamepad1.copy(gamepad1);
