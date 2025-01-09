@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.Slide;
 
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
+import org.firstinspires.ftc.teamcode.hardware.Sweeper;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -25,6 +26,7 @@ public class SpecimenAuto4 extends LinearOpMode {
 
     private MecanumDrive drive = null;
     private Telemetry.Item debugOutout = null;
+    private Sweeper sweeper = new Sweeper();
     private Intake intake = new Intake();
     private Slide clawSlide = new Slide("lift", "resetlift", Slide.ExtendMotorDirection.Reverse, 2600, 1.0,68.568);
     private SpecimenGrabber specimenGrabber = new SpecimenGrabber();
@@ -95,12 +97,13 @@ public class SpecimenAuto4 extends LinearOpMode {
         clawSlide.Init(hardwareMap);
         specimenGrabber.Init(hardwareMap);
         intake.Init(hardwareMap);
+        sweeper.init(hardwareMap);
+        sweeper.sweeperIn();
         telemetry.clearAll();
         telemetry.setAutoClear(false);
         //debugOutout = telemetry.addData("Debug:", imu.getRobotYawPitchRollAngles().toString());
 
         // Delcare Trajectory as such
-
         Action TrajectoryAction1 = drive.actionBuilder(drive.pose)
                 .stopAndAdd(new LiftToTopBar()) // lift to be ready to hang
                 .waitSeconds(.100)
