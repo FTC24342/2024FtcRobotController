@@ -1,0 +1,94 @@
+//https://technicbots.com/BlitzApp.html
+
+Action fullAuto = drive.actionBuilder(
+    new Pose2d(-62.175, -3, Math.toRadians(0)), Math.toRadians(0)//or drive.pose
+)
+.stopAndAdd(new LiftToTopBar())
+.waitSeconds(as neccessary to ensure the hook is lifted high enough)
+//drive to the bar
+.splineToSplineHeading(new Pose2d(-32.625,-3, Math.toRadians(0)), Math.toRadians(0))
+.stopAndAdd(new LiftToHookPosition())
+.stopAndAdd(new OpenGrabber())
+//drive back from the bar and start to rotate some
+.splineToSplineHeading(new Pose2d(-46.4,-6.4, Math.toRadians(45)), Math.toRadians(45))
+.stopAndAdd(new LiftToBottom())
+.stopAndAdd(new SlideToFullExtension())
+.stopAndAdd(new PickupToPushPosition())
+
+//drive toward the first push position (step 1 of 2)
+.splineToSplineHeading(new Pose2d(-51.2,-16.8, Math.toRadians(103)), Math.toRadians(103))
+//drive to the first push position (step 2 of 2)
+.splineToSplineHeading(new Pose2d(-42,-28.8, Math.toRadians(108)), Math.toRadians(108))
+//push piece 1 to the safe zone
+.splineToSplineHeading(new Pose2d(-55.2,-28.8, Math.toRadians(82)), Math.toRadians(82))
+//back to piece 1 push position
+.splineToSplineHeading(new Pose2d(-42,-28.8, Math.toRadians(108)), Math.toRadians(108))
+
+//move to piece 2 push position
+.splineToSplineHeading(new Pose2d(-42,-37.2, Math.toRadians(108)), Math.toRadians(108))
+//push piece 2 to the safe zone
+.splineToSplineHeading(new Pose2d(-55.2,-37.2, Math.toRadians(82)), Math.toRadians(82))
+//back to piece2 push position
+.splineToSplineHeading(new Pose2d(-42,-37.2, Math.toRadians(108)), Math.toRadians(108))
+
+//move to piece 3 push position
+.splineToSplineHeading(new Pose2d(-42,-44.4, Math.toRadians(108)), Math.toRadians(108))
+//push piece 3 to the safe zone
+.splineToSplineHeading(new Pose2d(-55.2,-44.4, Math.toRadians(82)), Math.toRadians(82))
+
+.stopAndAdd(new PickupToDrivePosition())
+.waitSeconds(.200)//see if we need this
+.stopAndAdd(new SlideToHomePosition())
+.waitSeconds(.200)//see if we need this
+
+//move to wall to pickup piece 2
+.splineToSplineHeading(new Pose2d(-62,-42, Math.toRadians(180)), Math.toRadians(180))
+.waitSeconds(.200)
+.stopAndAdd( new CloseGrabber())
+.waitSeconds(.200)
+.stopAndAdd( new LiftToTopBar())
+.splineToSplineHeading(new Pose2d(-32.625,-4, Math.toRadians(0)), Math.toRadians(0))
+.stopAndAdd( new LiftToHookPosition())
+.waitSeconds(.200)
+.stopAndAdd( new OpenGrabber())
+.stopAndAdd( new LiftToBottom())
+
+//move to wall to pickup piece 3
+.splineToSplineHeading(new Pose2d(-62,-42, Math.toRadians(180)), Math.toRadians(180))
+.waitSeconds(.200)
+.stopAndAdd( new CloseGrabber())
+.waitSeconds(.200)
+.stopAndAdd( new LiftToTopBar())
+.splineToSplineHeading(new Pose2d(-32.326,-5, Math.toRadians(0)), Math.toRadians(0))
+.stopAndAdd( new LiftToHookPosition())
+.waitSeconds(.200)
+.stopAndAdd( new OpenGrabber())
+.stopAndAdd( new LiftToBottom())
+
+//move to wall to pickup piece 4
+.splineToSplineHeading(new Pose2d(-62,-42, Math.toRadians(180)), Math.toRadians(180))
+.waitSeconds(.200)
+.stopAndAdd( new CloseGrabber())
+.waitSeconds(.200)
+.stopAndAdd( new LiftToTopBar())
+.splineToSplineHeading(new Pose2d(-32.326,-6, Math.toRadians(0)), Math.toRadians(0))
+.stopAndAdd( new LiftToHookPosition())
+.waitSeconds(.200)
+.stopAndAdd( new OpenGrabber())
+.stopAndAdd( new LiftToBottom())
+
+//move to wall to pickup piece 5
+.splineToSplineHeading(new Pose2d(-62,-42, Math.toRadians(180)), Math.toRadians(180))
+.waitSeconds(.200)
+.stopAndAdd( new CloseGrabber())
+.waitSeconds(.200)
+.stopAndAdd( new LiftToTopBar())
+.splineToSplineHeading(new Pose2d(-32.326,-7, Math.toRadians(0)), Math.toRadians(0))
+.stopAndAdd( new LiftToHookPosition())
+.waitSeconds(.200)
+.stopAndAdd( new OpenGrabber())
+.stopAndAdd( new LiftToBottom())
+
+//wait for the lift ot get to the bottom before ending
+.waitSeconds(5)
+.build();
