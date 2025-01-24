@@ -98,7 +98,6 @@ public class SpecimenAuto4 extends LinearOpMode {
         specimenGrabber.Init(hardwareMap);
         intake.Init(hardwareMap);
         sweeper.init(hardwareMap);
-        sweeper.sweeperIn();
         telemetry.clearAll();
         telemetry.setAutoClear(false);
         //debugOutout = telemetry.addData("Debug:", imu.getRobotYawPitchRollAngles().toString());
