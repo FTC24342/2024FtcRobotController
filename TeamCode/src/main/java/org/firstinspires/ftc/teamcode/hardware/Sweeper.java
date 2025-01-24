@@ -12,6 +12,7 @@ public class Sweeper {
     private double range = 0.020;
     public void init(HardwareMap hardwareMap) {
         this.servo = hardwareMap.get(Servo.class, "sweeper");
+        servo.setPosition(inPosition);
     }
 
     public void sweeperOut() {
