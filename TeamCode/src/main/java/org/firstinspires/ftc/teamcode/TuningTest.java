@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import android.annotation.SuppressLint;
 
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,8 +19,8 @@ import org.firstinspires.ftc.teamcode.hardware.Slide;
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
 import org.firstinspires.ftc.teamcode.hardware.Sweeper;
 
-@TeleOp(name = "Pose Calculator")
-public class PoseCalculator extends OpMode {
+@TeleOp(name = "Tuning Test", group = "./Tests")
+public class TuningTest extends OpMode {
     private MecanumDrive drive = null;
     private Intake intake = new Intake();  // get the intake class
     private Slide intakeSlide = new Slide("slide", "", Slide.ExtendMotorDirection.Forward, 1300, 1.0, 114.28);
@@ -32,6 +35,7 @@ public class PoseCalculator extends OpMode {
     Gamepad prevGamepad2 = new Gamepad();
     Gamepad currGamepad2 = new Gamepad();
     Intake.IntakePositon desiredPosition = Intake.IntakePositon.Init;
+    private Action testTraject = null;
 
     public void processSpecimanGrabber() {
         if(currGamepad2.x && !prevGamepad2.x) {
@@ -56,21 +60,13 @@ public class PoseCalculator extends OpMode {
                 desiredPosition = Intake.IntakePositon.DRIVE;
             }
         }
-        if (currGamepad1.b && !prevGamepad1.b) {
-            desiredPosition = Intake.IntakePositon.SWEEP;
-
-        }
 
         //send intake commands based on desired state
         if (desiredPosition == Intake.IntakePositon.DRIVE){
             intake.goToDrive();
         } else if (desiredPosition == Intake.IntakePositon.PICKUP) {
             intake.goToPickup();
-        } else if (desiredPosition == Intake.IntakePositon.SWEEP) {
-            intake.intakeSweep();
-
         }
-
 
         //in/out/stop of sample
         if (currGamepad1.right_bumper && !currGamepad1.left_bumper) {
@@ -152,12 +148,19 @@ public class PoseCalculator extends OpMode {
         drive.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        testTraject = drive.actionBuilder(drive.pose)
+                .turnTo(90)
+                .build();
     }
+
 
 
     @Override
     public void start() {
         intake.Init(hardwareMap);
+
+        Actions.runBlocking(testTraject);
+
     }
     @SuppressLint("DefaultLocale")
     @Override
@@ -196,10 +199,6 @@ public class PoseCalculator extends OpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }}
+    }
+}
 //END ACTIONS
-
-
-
-
-

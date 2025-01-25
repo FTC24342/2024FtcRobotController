@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 
 public class Intake {
     public enum IntakePositon {
-        UNKNOWN, PICKUP, DRIVE, Init
+        UNKNOWN, PICKUP, DRIVE, Init, SWEEP
     }
 
     public Servo axis1 = null;
@@ -111,3 +111,4 @@ public class Intake {
         axis2.setPosition(axis2Init);
     }
 }
+
