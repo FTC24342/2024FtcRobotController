@@ -149,7 +149,9 @@ public class TuningTest extends OpMode {
         drive.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         testTraject = drive.actionBuilder(drive.pose)
-                .turnTo(90)
+                // .lineToX(-42) // use for driving 20 ines from -62x
+                .turn(Math.toRadians(90)) // use for turning 90 degrees from current heading
+                .waitSeconds(2)
                 .build();
     }
 

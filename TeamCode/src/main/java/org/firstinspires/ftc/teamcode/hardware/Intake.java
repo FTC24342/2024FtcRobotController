@@ -17,7 +17,6 @@ public class Intake {
     private CRServo right = null;
     private Double maxPickupMovement = .022;
     public IntakePositon currentPosition = IntakePositon.UNKNOWN;
-
     public double axis1Init = 0.117222;
     public double axis2Init = 0.323889;
     public double axis1Drive = 0.147778;

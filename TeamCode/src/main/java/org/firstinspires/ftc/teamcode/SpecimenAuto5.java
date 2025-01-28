@@ -139,10 +139,11 @@ public class SpecimenAuto5 extends LinearOpMode {
         Action TrajectoryAction1 = drive.actionBuilder(drive.pose)
                 .stopAndAdd(new LiftToTopBar()) // lifts lift to the top chamber
                 .waitSeconds(.100)
-                .strafeTo(new Vector2d(-32.379, -3)) // robot backs up
+                .strafeTo(new Vector2d(-32.379, -3)) // robot to te bar
                 .stopAndAdd(new LiftToHookPosition()) // hooks specimen on top chamber
                 .waitSeconds(.250)
                 .stopAndAdd(new OpenGrabber()) // lets go of specimen
+                .stopAndAdd(new LiftToBottom())
                 .stopAndAdd(new SlideOut()) // extends slide to out position
                 .splineToLinearHeading(new Pose2d(-46.96, -19.23, Math.toRadians(90)), Math.toRadians(90)) // moves in front of observation zone
                 .stopAndAdd(new SweepPos()) // moves intake to sweep position
@@ -155,9 +156,59 @@ public class SpecimenAuto5 extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-31.87, -39.03), Math.toRadians(125)) // Scoot behind piece 2
                 .strafeToLinearHeading(new Vector2d(-31.87, -49.16), Math.toRadians(125)) // Scoot behind piece 3
                 .strafeToLinearHeading(new Vector2d(-52.47, -49.93), Math.toRadians(58)) // Push to observation zone
-                .splineToLinearHeading(new Pose2d(-61.81, -38.87, Math.toRadians(179)), Math.toRadians(179))
+                .splineToLinearHeading(new Pose2d(-62, -38.87, Math.toRadians(180)), Math.toRadians(180))
                 .stopAndAdd(new InitPos())
                 .stopAndAdd(new SlideIn())
+
+
+                .strafeTo(new Vector2d(-62, -42.5)) // move to grab specimen from the wall
+                .stopAndAdd(new CloseGrabber())
+                .waitSeconds(.250)
+                .stopAndAdd(new LiftToTopBar())
+                .strafeToLinearHeading(new Vector2d(-32.1, -2.1), Math.toRadians(0))
+                .stopAndAdd(new LiftToHookPosition()) // lower the lift to hang
+                .waitSeconds(.250)
+                .stopAndAdd(new OpenGrabber()) //open claw
+                .stopAndAdd(new LiftToBottom())
+                //2 spec^
+
+                //start 3rd spec
+                .strafeToLinearHeading(new Vector2d(-62, -42.5), Math.toRadians(180)) // move to grab specimen from the wall
+                .stopAndAdd(new CloseGrabber())
+                .waitSeconds(.250)
+                .stopAndAdd(new LiftToTopBar())
+                .strafeToLinearHeading(new Vector2d(-32.1, -3.1), Math.toRadians(0))
+                .stopAndAdd(new LiftToHookPosition()) // lower the lift to hang
+                .waitSeconds(.250)
+                .stopAndAdd(new OpenGrabber()) //open claw
+                .stopAndAdd(new LiftToBottom())
+                //3 spec^
+
+                // start 4th
+                .strafeToLinearHeading(new Vector2d(-62, -42.5), Math.toRadians(180)) // move to grab specimen from the wall
+                .stopAndAdd(new CloseGrabber())
+                .waitSeconds(.250)
+                .stopAndAdd(new LiftToTopBar())
+                .strafeToLinearHeading(new Vector2d(-32.1, -4.1), 0)
+                .stopAndAdd(new LiftToHookPosition()) // lower the lift to hang
+                .waitSeconds(.250)
+                .stopAndAdd(new OpenGrabber()) //open claw
+                .stopAndAdd(new LiftToBottom())
+                //4 spec^
+
+                //start 5th
+                .strafeToLinearHeading(new Vector2d(-62, -42.5), Math.toRadians(180)) // move to grab specimen from the wall
+                .stopAndAdd(new CloseGrabber())
+                .waitSeconds(.250)
+                .stopAndAdd(new LiftToTopBar())
+                .strafeToLinearHeading(new Vector2d(-32.1, 5.1), 0)
+                .stopAndAdd(new LiftToHookPosition()) // lower the lift to hang
+                .waitSeconds(.250)
+                .stopAndAdd(new OpenGrabber()) //open claw
+                .stopAndAdd(new LiftToBottom())
+
+
+                .waitSeconds(2)
                 .build();
 
         Actions.runBlocking(
