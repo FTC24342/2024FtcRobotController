@@ -38,27 +38,32 @@ public class Slide {
         motor.setDirection(extendMotorDirection == ExtendMotorDirection.Forward ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
     }
 
+    public Boolean IsAtPosition(double targetInches, double marginInches) {
+        if(motor.getCurrentPosition()*ticksPerInch <= targetInches+marginInches &&
+                motor.getCurrentPosition()*ticksPerInch >= targetInches-marginInches) {
+            return true;
+        }
+        return false;
+    }
     public void Extend(double power) {
         //extend with the power
         motor.setTargetPosition(maxTicks);
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(Math.min(power, maxSpeed));
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void Retract(double power) {
-        //extend with the power
+    public void RetractToZeroTouch(double power) {
         if (zeroTouch != null) {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setDirection(extendMotorDirection == ExtendMotorDirection.Forward ? DcMotorSimple.Direction.REVERSE  : DcMotorSimple.Direction.FORWARD);
             motor.setPower(Math.min(power, maxSpeed));
-
         }
-        else {
-            motor.setTargetPosition(0);
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motor.setPower(Math.min(power, maxSpeed));
-        }
-
+    }
+    public void Retract(double power) {
+        //extend with the power
+        motor.setTargetPosition(0);
+        motor.setPower(Math.min(power, maxSpeed));
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public double GetExtendedInches() {
@@ -88,7 +93,7 @@ public class Slide {
     }
     public  void Stop() {
         //stop the motor
-        motor.setTargetPosition(0);
+        motor.setTargetPosition(motor.getCurrentPosition());
         motor.setPower(0);
     }
     public void resetEncoder() {
