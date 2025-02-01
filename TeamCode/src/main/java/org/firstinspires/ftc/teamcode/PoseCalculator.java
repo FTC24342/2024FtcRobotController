@@ -1,32 +1,35 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.annotation.SuppressLint;
+
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-
-import org.firstinspires.ftc.teamcode.hardware.ClawSlide;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.IntakeSlide;
-import org.firstinspires.ftc.teamcode.hardware.Slide;
-import org.firstinspires.ftc.teamcode.hardware.MecanumEncoder;
+import org.firstinspires.ftc.teamcode.hardware.ClawSlide;
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
 import org.firstinspires.ftc.teamcode.hardware.Sweeper;
 
-@TeleOp(name = "Main Teleop")
-public class teleopDrive extends OpMode {
+@TeleOp(name = "Pose Calculator")
+public class PoseCalculator extends OpMode {
     private MecanumDrive drive = null;
     private Intake intake = new Intake();  // get the intake class
     private IntakeSlide intakeSlide = new IntakeSlide();
-    private ClawSlide clawSlide = new ClawSlide(); //68.568
+    private ClawSlide clawSlide = new ClawSlide();
     private SpecimenGrabber specimanGrabber = new SpecimenGrabber();
     private Sweeper sweeper = new Sweeper();
-    private Telemetry.Item output = null;
-    private Telemetry.Item output2 = null;
+    private Telemetry.Item PoseX = null;
+    private Telemetry.Item PoseY = null;
+    private Telemetry.Item PoseHeading = null;
+    private Telemetry.Item LiftTicks = null;
+    private Telemetry.Item IntakeTicks = null;
     Gamepad prevGamepad1 = new Gamepad();
     Gamepad currGamepad1 = new Gamepad();
     Gamepad prevGamepad2 = new Gamepad();
@@ -37,7 +40,13 @@ public class teleopDrive extends OpMode {
         if(currGamepad2.x && !prevGamepad2.x) {
             specimanGrabber.processOpenClose();
         } else if (currGamepad2.y && !prevGamepad2.y){
-            clawSlide.MoveTo(37.825, 1);
+//            clawSlide.MoveTo(44, 1);
+        }
+    }
+    public void hang() {
+        if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
+            clawSlide.MoveTo(0, 1.0);
+            specimanGrabber.Open();
         }
     }
     private void processIntake() {
@@ -56,13 +65,21 @@ public class teleopDrive extends OpMode {
                 desiredPosition = Intake.IntakePositon.DRIVE;
             }
         }
+        if (currGamepad1.b && !prevGamepad1.b) {
+            desiredPosition = Intake.IntakePositon.SWEEP;
+
+        }
 
         //send intake commands based on desired state
         if (desiredPosition == Intake.IntakePositon.DRIVE){
             intake.goToDrive();
         } else if (desiredPosition == Intake.IntakePositon.PICKUP) {
             intake.goToPickup();
+        } else if (desiredPosition == Intake.IntakePositon.SWEEP) {
+            intake.intakeSweep();
+
         }
+
 
         //in/out/stop of sample
         if (currGamepad1.right_bumper && !currGamepad1.left_bumper) {
@@ -105,25 +122,29 @@ public class teleopDrive extends OpMode {
 
     public void processClawStop() {
         if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
-            clawSlide.Stop();
+ //           clawSlide.Stop();
         }
     }
     public void processClawManualDown() {
         if(currGamepad2.left_trigger > 0.1) {
-            clawSlide.Retract(currGamepad1.left_trigger);
+            clawSlide.Retract(currGamepad2.left_trigger);
+        }
+        else if(currGamepad2.right_trigger > 0.1) {
+            clawSlide.Extend(currGamepad2.right_trigger);
+        }
+        else if(prevGamepad2.right_trigger > 0.1 || prevGamepad2.left_trigger > 0.1){
+            clawSlide.Stop();
         }
     }
 
     public void processLiftDPad() {
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
             clawSlide.MoveToTopBarReadyPosition(1.0);
+            //clawSlide.MoveTo(16.5,1);
         }
         else if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) {
-            //hang specimen
-            hangSpecimen();
-        }
-        else if(currGamepad2.a && !prevGamepad2.a) {
-            clawSlide.RetractToZeroTouch(1.0);
+            clawSlide.MoveToTopBarHookSpecimanPosition(1.0);
+
         }
     }
     @Override
@@ -132,14 +153,23 @@ public class teleopDrive extends OpMode {
         currGamepad1.copy(gamepad1);
         prevGamepad2.copy(gamepad2);
         clawSlide.Init(hardwareMap);
-        output = telemetry.addData("ticks", clawSlide.motor.getCurrentPosition());
+        PoseX = telemetry.addData("X: ", "");
+        PoseY = telemetry.addData("Y: ", "");
+        PoseHeading = telemetry.addData("Heading: ", "");
+        LiftTicks = telemetry.addData("LiftTicks: ", "");
+        IntakeTicks = telemetry.addData("IntakeTicks: ", "");
         currGamepad2.copy(gamepad2);
         specimanGrabber.Init(hardwareMap);
         intakeSlide.Init(hardwareMap);
         specimanGrabber.Init(hardwareMap);
         clawSlide.Init(hardwareMap);
         sweeper.init(hardwareMap);
-        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        drive = new MecanumDrive(hardwareMap, new Pose2d(-62, 0, 0));
+        drive.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        drive.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        drive.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        drive.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    //    clawSlide.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
 
@@ -147,11 +177,17 @@ public class teleopDrive extends OpMode {
     public void start() {
         intake.Init(hardwareMap);
     }
+    @SuppressLint("DefaultLocale")
     @Override
     public void loop() {
         currGamepad1.copy(gamepad1);
         currGamepad2.copy(gamepad2);
-        output.addData("ticks", clawSlide.motor.getCurrentPosition());
+        drive.updatePoseEstimate();
+        PoseX.setValue("%f2.3 in", drive.pose.position.x);
+        PoseY.setValue("%f2.3 in", drive.pose.position.y);
+        PoseHeading.setValue("%f3.2 degrees", Math.toDegrees(drive.pose.heading.toDouble()));
+        LiftTicks.setValue("%d", clawSlide.motor.getCurrentPosition());
+        IntakeTicks.setValue("%d", intakeSlide.motor.getCurrentPosition());
         drive.setPowersFeildCentric(new PoseVelocity2d(
                 new Vector2d(
                         currGamepad1.left_stick_x,
@@ -164,6 +200,7 @@ public class teleopDrive extends OpMode {
         processClawStop();
         processLiftDPad();
         processSweeper();
+        hang();
         processClawManualDown();
         processSpecimanGrabber();
         clawSlide.ProcessLoop();
@@ -171,11 +208,11 @@ public class teleopDrive extends OpMode {
         prevGamepad2.copy(currGamepad2);
 
     }
-    //###################ACTIONS #####################
+    //################### ACTIONS #####################
     //BEGIN ACTIONS
     public void hangSpecimen() {
         try {
-            clawSlide.MoveToWallPickupPosition(1.0);
+            clawSlide.MoveTo(0, 0.75);
             Thread.sleep(250);
             specimanGrabber.Open();
         } catch (InterruptedException e) {

@@ -27,7 +27,7 @@ public class TeleTest extends OpMode {
     Gamepad currGamepad1 = new Gamepad();
     Gamepad prevGamepad2 = new Gamepad();
     Gamepad currGamepad2 = new Gamepad();
-    Intake.IntakePositon desiredPosition = Intake.IntakePositon.HOME;
+    Intake.IntakePositon desiredPosition = Intake.IntakePositon.Init;
 
     public void processSpecimanGrabber() {
         if(currGamepad2.x && !prevGamepad2.x) {
@@ -48,7 +48,7 @@ public class TeleTest extends OpMode {
             if(desiredPosition == Intake.IntakePositon.DRIVE){
                 desiredPosition = Intake.IntakePositon.PICKUP;
             }
-            else if(desiredPosition == Intake.IntakePositon.PICKUP || desiredPosition == Intake.IntakePositon.HOME) {
+            else if(desiredPosition == Intake.IntakePositon.PICKUP || desiredPosition == Intake.IntakePositon.Init) {
                 desiredPosition = Intake.IntakePositon.DRIVE;
             }
         }

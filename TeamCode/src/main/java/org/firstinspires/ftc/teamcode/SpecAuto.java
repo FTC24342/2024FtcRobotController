@@ -21,15 +21,49 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 
-@Autonomous(name="4 specimen auto")
-public class SpecimenAuto4 extends LinearOpMode {
+@Autonomous(name="TestAuto")
+public class SpecAuto extends LinearOpMode {
 
     private MecanumDrive drive = null;
     private Telemetry.Item debugOutout = null;
     private Sweeper sweeper = new Sweeper();
     private Intake intake = new Intake();
+    private Slide intakeSlide = new Slide("slide", "", Slide.ExtendMotorDirection.Forward, 1300, 1.0, 114.28);
     private Slide clawSlide = new Slide("lift", "resetlift", Slide.ExtendMotorDirection.Reverse, 2600, 1.0,68.568);
     private SpecimenGrabber specimenGrabber = new SpecimenGrabber();
+
+    public class SlideOut implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeSlide.Extend(1);
+
+            return false;
+        }
+    }
+    public class SlideIn implements  Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intakeSlide.Retract(1);
+            return false;
+        }
+
+    }
+
+    public class SweepPos implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intake.intakeSweep();
+            return false;
+        }
+    }
+
+    public class InitPos implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intake.goToInit();
+            return false;
+        }
+    }
 
     public class OpenGrabber implements Action {
         @Override
@@ -95,9 +129,11 @@ public class SpecimenAuto4 extends LinearOpMode {
         // run once when init is pressed
         drive = new MecanumDrive(this.hardwareMap, new Pose2d(-62.175, -3, 0));
         clawSlide.Init(hardwareMap);
+        intakeSlide.Init(hardwareMap);
         specimenGrabber.Init(hardwareMap);
         intake.Init(hardwareMap);
         sweeper.init(hardwareMap);
+        sweeper.sweeperIn();
         telemetry.clearAll();
         telemetry.setAutoClear(false);
         //debugOutout = telemetry.addData("Debug:", imu.getRobotYawPitchRollAngles().toString());
@@ -110,79 +146,12 @@ public class SpecimenAuto4 extends LinearOpMode {
                 .stopAndAdd(new LiftToHookPosition()) // lower the lift to hang
                 .waitSeconds(.250)
                 .stopAndAdd(new OpenGrabber()) //open claw
-                .lineToX(-42.5) // backup
+                .lineToX(-48)
                 //first hang completed
-                .splineTo(new Vector2d(-13.5, -36.75), Math.toRadians(0)) // move to first push
-                .strafeTo(new Vector2d(-13.5, -48)) // move in front of sample
-                .strafeTo(new Vector2d(-45, -49)) // pushes
-                .strafeTo(new Vector2d(-13.5, -49)) // backup
-                .strafeTo(new Vector2d(-13.5, -57)) // move in front of 2nd sample
-                .strafeTo(new Vector2d(-45, -57)) // pushes second sample
-                .stopAndAdd(new LiftToBottom()) // lower the lift to the  bottom
-                //blocks pushed
-                .strafeTo(new Vector2d(-48, -38)) // move left in front of specimen on wall
-                .strafeTo(new Vector2d(-62,-42)) // move forward to pickup specimen
-                .stopAndAdd(new CloseGrabber()) // close claw
-                .waitSeconds(.200)
-                .stopAndAdd(new LiftToTopBar()) // lift to top
-                .strafeToLinearHeading(new Vector2d(-32.625, -4), Math.toRadians(0)) // strafe to submersible
-                .stopAndAdd(new LiftToHookPosition()) // lower lift to hook
-                .waitSeconds(.200)
-                .stopAndAdd(new OpenGrabber()) // open claw
-                .stopAndAdd(new LiftToBottom()) // lower lift to bottom
-                //second hang completed
-                .strafeToLinearHeading(new Vector2d(-62, -42), Math.toRadians(180)) // strafe back to the wall to pick up the specimen
-                .waitSeconds(.200)
-                .stopAndAdd(new CloseGrabber()) // close the claw
-                .waitSeconds(.200)
-                .stopAndAdd(new LiftToTopBar()) // lift to top
-                .strafeToLinearHeading(new Vector2d(-32.625, -5), Math.toRadians(0)) // strafe back to submersible
-                .stopAndAdd(new LiftToHookPosition()) // lower lift to hook
-                .waitSeconds(.200)
-                .stopAndAdd(new OpenGrabber()) // open claw
-                .stopAndAdd(new LiftToBottom()) // lower lift to bottom
-                //third hang completed
-                .strafeToLinearHeading(new Vector2d(-62, -42), Math.toRadians(180)) // strafe back to the wall to pick up the specimen
-                .waitSeconds(.200)
-                .stopAndAdd(new CloseGrabber()) // close the claw
-                .waitSeconds(.200)
-                .stopAndAdd(new LiftToTopBar()) // lift to top
-                .strafeToLinearHeading(new Vector2d(-32.625, -7), Math.toRadians(0)) // strafe back to submersible
-                .stopAndAdd(new LiftToHookPosition()) // lower lift to hook
-                .waitSeconds(.200)
-                .stopAndAdd(new OpenGrabber()) // open claw
-                .stopAndAdd(new LiftToBottom()) // lower lift to bottom
-                .waitSeconds(1)
+                .stopAndAdd(new SlideOut())
+                .waitSeconds(.250)
+                .strafeToLinearHeading(new Vector2d(-33, -35), 120)
                 .build();
-//
-//                //old code
-//                .strafeTo(new Vector2d(-54, -38)) // move right to pickup specimen
-//                .strafeTo(new Vector2d(-65, -40))
-//                .stopAndAdd(new CloseGrabber())
-//                .waitSeconds(.250)
-//                .stopAndAdd(new LiftToTopBar())
-//                .splineTo(new Vector2d(-31.625, -5), 0)
-//                .stopAndAdd(new LiftToHookPosition())
-//                .waitSeconds(.250)
-//                .stopAndAdd(new OpenGrabber())
-//                .waitSeconds(.250)
-//                .stopAndAdd(new LiftToBottom())
-//                .lineToX(-35)
-//                .splineTo(new Vector2d(-54, -40),0)
-//                .strafeTo(new Vector2d(-65, -40))
-//                .stopAndAdd(new CloseGrabber())
-//                .waitSeconds(.150)
-//                .stopAndAdd(new LiftToTopBar())
-//                .splineTo(new Vector2d(-31.625, -7), 0)
-//                .stopAndAdd(new LiftToHookPosition())
-//                .waitSeconds(.250)
-//                .stopAndAdd(new OpenGrabber())
-//                .lineToX(-35)
-//                .waitSeconds(.250)
-//                .stopAndAdd(new LiftToBottom())
-//                .waitSeconds(1.5)
-//                .build();
-//
         Actions.runBlocking(
                 new SequentialAction(
                         new CloseGrabber()
