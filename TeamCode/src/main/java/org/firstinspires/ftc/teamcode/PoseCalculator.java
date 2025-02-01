@@ -14,7 +14,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.IntakeSlide;
 import org.firstinspires.ftc.teamcode.hardware.ClawSlide;
+import org.firstinspires.ftc.teamcode.hardware.Methods;
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
+import org.firstinspires.ftc.teamcode.hardware.StepHandler;
 import org.firstinspires.ftc.teamcode.hardware.Sweeper;
 
 @TeleOp(name = "Pose Calculator")
@@ -27,6 +29,8 @@ public class PoseCalculator extends OpMode {
     private Sweeper sweeper = new Sweeper();
     private Telemetry.Item PoseX = null;
     private Telemetry.Item PoseY = null;
+    private Telemetry.Item selectedMethod = null;
+    private Methods currentMethod = Methods.NONE;
     private Telemetry.Item PoseHeading = null;
     private Telemetry.Item LiftTicks = null;
     private Telemetry.Item IntakeTicks = null;
@@ -45,8 +49,39 @@ public class PoseCalculator extends OpMode {
     }
     public void hang() {
         if (currGamepad2.dpad_right && !prevGamepad2.dpad_right) {
-            clawSlide.MoveTo(0, 1.0);
+            clawSlide.MoveTo(0, 1.0
+                );
             specimanGrabber.Open();
+        }
+    }
+    private void processMethodToggle() {
+        if (currGamepad1.b && !prevGamepad1.b) {
+            if (currentMethod == Methods.NONE) {
+                currentMethod = Methods.SPLINE;
+                selectedMethod.setValue("SPLINE");
+            }
+            if (currentMethod == Methods.SPLINE) {
+                currentMethod = Methods.SPLINE_WITH_HEADING;
+                selectedMethod.setValue("SPLINE_HEADING");
+            }
+            if (currentMethod == Methods.SPLINE_WITH_HEADING) {
+                currentMethod = Methods.STRAFE;
+                selectedMethod.setValue("STRAFE");
+            }
+            if (currentMethod == Methods.STRAFE) {
+                currentMethod = Methods.STRAFE_WITH_HEADING;
+                selectedMethod.setValue("STRAFE_HEADING");
+            }
+            if (currentMethod == Methods.STRAFE_WITH_HEADING) {
+                currentMethod = Methods.SPLINE;
+                selectedMethod.setValue("SPLINE");
+            }
+        }
+    }
+    private void processSteps() {
+        if (currGamepad1.a && !prevGamepad1.a) {
+            drive.updatePoseEstimate();
+            StepHandler.createNewStep(currentMethod, drive.pose.position.x, drive.pose.position.y, drive.pose.heading.real);
         }
     }
     private void processIntake() {
@@ -157,6 +192,7 @@ public class PoseCalculator extends OpMode {
         PoseY = telemetry.addData("Y: ", "");
         PoseHeading = telemetry.addData("Heading: ", "");
         LiftTicks = telemetry.addData("LiftTicks: ", "");
+        selectedMethod = telemetry.addData("Method", "NONE");
         IntakeTicks = telemetry.addData("IntakeTicks: ", "");
         currGamepad2.copy(gamepad2);
         specimanGrabber.Init(hardwareMap);
@@ -200,6 +236,8 @@ public class PoseCalculator extends OpMode {
         processClawStop();
         processLiftDPad();
         processSweeper();
+        processMethodToggle();
+        processSteps();
         hang();
         processClawManualDown();
         processSpecimanGrabber();
@@ -208,6 +246,12 @@ public class PoseCalculator extends OpMode {
         prevGamepad2.copy(currGamepad2);
 
     }
+
+//    @Override
+//    public void stop() {
+//        // write string of path
+//        StepHandler.generateStepsString();
+//    }
     //################### ACTIONS #####################
     //BEGIN ACTIONS
     public void hangSpecimen() {
@@ -219,6 +263,7 @@ public class PoseCalculator extends OpMode {
             throw new RuntimeException(e);
         }
     }}
+
 //END ACTIONS
 
 
