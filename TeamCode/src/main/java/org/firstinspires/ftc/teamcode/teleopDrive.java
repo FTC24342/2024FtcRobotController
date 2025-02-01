@@ -9,7 +9,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
+import org.firstinspires.ftc.teamcode.hardware.ClawSlide;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
+import org.firstinspires.ftc.teamcode.hardware.IntakeSlide;
 import org.firstinspires.ftc.teamcode.hardware.Slide;
 import org.firstinspires.ftc.teamcode.hardware.MecanumEncoder;
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
@@ -19,8 +21,8 @@ import org.firstinspires.ftc.teamcode.hardware.Sweeper;
 public class teleopDrive extends OpMode {
     private MecanumDrive drive = null;
     private Intake intake = new Intake();  // get the intake class
-    private Slide intakeSlide = new Slide("slide", "", Slide.ExtendMotorDirection.Forward, 1300, 1.0, 114.28);
-    private Slide clawSlide = new Slide("lift", "resetlift", Slide.ExtendMotorDirection.Reverse, 3192, 1.0,86); //68.568
+    private IntakeSlide intakeSlide = new IntakeSlide();
+    private ClawSlide clawSlide = new ClawSlide(); //68.568
     private SpecimenGrabber specimanGrabber = new SpecimenGrabber();
     private Sweeper sweeper = new Sweeper();
     private Telemetry.Item output = null;
@@ -35,7 +37,7 @@ public class teleopDrive extends OpMode {
         if(currGamepad2.x && !prevGamepad2.x) {
             specimanGrabber.processOpenClose();
         } else if (currGamepad2.y && !prevGamepad2.y){
-            clawSlide.MoveTo(44, 1);
+            clawSlide.MoveTo(37.825, 1);
         }
     }
     private void processIntake() {
@@ -114,12 +116,14 @@ public class teleopDrive extends OpMode {
 
     public void processLiftDPad() {
         if (currGamepad2.dpad_up && !prevGamepad2.dpad_up) {
-            clawSlide.MoveTo(16.5,1);
+            clawSlide.MoveToTopBarReadyPosition(1.0);
         }
         else if (currGamepad2.dpad_down && !prevGamepad2.dpad_down) {
             //hang specimen
             hangSpecimen();
-
+        }
+        else if(currGamepad2.a && !prevGamepad2.a) {
+            clawSlide.RetractToZeroTouch(1.0);
         }
     }
     @Override
@@ -162,6 +166,7 @@ public class teleopDrive extends OpMode {
         processSweeper();
         processClawManualDown();
         processSpecimanGrabber();
+        clawSlide.ProcessLoop();
         prevGamepad1.copy(currGamepad1);
         prevGamepad2.copy(currGamepad2);
 
@@ -170,7 +175,7 @@ public class teleopDrive extends OpMode {
     //BEGIN ACTIONS
     public void hangSpecimen() {
         try {
-            clawSlide.MoveTo(0, 0.75);
+            clawSlide.MoveToWallPickupPosition(1.0);
             Thread.sleep(250);
             specimanGrabber.Open();
         } catch (InterruptedException e) {

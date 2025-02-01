@@ -54,9 +54,9 @@ public class Slide {
 
     public void RetractToZeroTouch(double power) {
         if (zeroTouch != null) {
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setDirection(extendMotorDirection == ExtendMotorDirection.Forward ? DcMotorSimple.Direction.REVERSE  : DcMotorSimple.Direction.FORWARD);
             motor.setPower(Math.min(power, maxSpeed));
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
     public void Retract(double power) {
