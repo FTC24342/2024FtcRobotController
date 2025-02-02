@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.*;
 public class StepHandler {
     public static int currentStep = 1;
     public static Map<Integer, PathData> stepMap = new HashMap<>();
@@ -23,8 +24,47 @@ public class StepHandler {
             return "error";
         }
     }
-    public static void generateStepsString() {
-        stepMap.forEach((step, data) -> System.out.println(buildString(data)));
-        System.out.println(".build;");
+    public static String generateStepsString() {
+        String finalString = "";
+        stepMap.forEach((step, data) -> finalString + buildString(data) + "\n";
+        finalString += "\n" + ".build;";
     }
+
+
+
+
+    public void createFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"))) {
+            writer.write(generateStepsString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
