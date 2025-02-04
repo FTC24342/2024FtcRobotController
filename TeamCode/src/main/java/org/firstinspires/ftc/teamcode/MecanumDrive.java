@@ -70,6 +70,14 @@ public final class MecanumDrive {
 
 
         // feedforward parameters (in tick units) //prev before 1/25/25
+        /**
+         * PID controller with various feedforward components. [kV], [kA], and [kStatic] are designed for DC motor feedforward
+         * control (the most common kind of feedforward in FTC).
+         * taken from https://github.com/acmerobotics/road-runner/blob/nth-order-splines/core/src/main/kotlin/com/acmerobotics/roadrunner/control/PIDFController.kt
+         * @param kV feedforward velocity gain
+         * @param kA feedforward acceleration gain
+         * @param kS additive feedforward constant
+         */
         public double kS =  1.0583072556174482;//0.8583072556174482; // 0.8083072556174482;//0.080375;//1.0174751770708461;
         public double kV =  0.000262869212788957 ;//0.0005628692127889575; // 0.0003628692127889575;//0.000200;//0.0003450079827757681;
                                                     // alachua
