@@ -27,7 +27,7 @@ public class ClawSlide extends Slide{
     }
 
     public void MoveToHighBasketPosition(double power){
-        this.MoveTo( 20, power);
+        this.MoveTo( 38.825, power);
     }
 
     public void MoveToLowBasketPosition(double power){

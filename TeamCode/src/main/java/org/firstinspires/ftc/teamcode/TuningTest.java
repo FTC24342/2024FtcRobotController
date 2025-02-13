@@ -12,12 +12,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.Intake;
 import org.firstinspires.ftc.teamcode.hardware.Slide;
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
 import org.firstinspires.ftc.teamcode.hardware.Sweeper;
+
+import java.util.Timer;
 
 @TeleOp(name = "Tuning Test", group = "./Tests")
 public class TuningTest extends OpMode {
@@ -30,13 +33,14 @@ public class TuningTest extends OpMode {
     private Telemetry.Item PoseX = null;
     private Telemetry.Item PoseY = null;
     private Telemetry.Item PoseHeading = null;
+    private Telemetry.Item TimeSec = null;
     Gamepad prevGamepad1 = new Gamepad();
     Gamepad currGamepad1 = new Gamepad();
     Gamepad prevGamepad2 = new Gamepad();
     Gamepad currGamepad2 = new Gamepad();
     Intake.IntakePositon desiredPosition = Intake.IntakePositon.Init;
     private Action testTraject = null;
-
+    private long elapsedTime = 0;
     public void processSpecimanGrabber() {
         if(currGamepad2.x && !prevGamepad2.x) {
             specimanGrabber.processOpenClose();
@@ -137,6 +141,7 @@ public class TuningTest extends OpMode {
         PoseX = telemetry.addData("X: ", "");
         PoseY = telemetry.addData("Y: ", "");
         PoseHeading = telemetry.addData("Heading: ", "");
+        TimeSec = telemetry.addData("Time: ", "");
         currGamepad2.copy(gamepad2);
         specimanGrabber.Init(hardwareMap);
         intakeSlide.Init(hardwareMap);
@@ -149,9 +154,8 @@ public class TuningTest extends OpMode {
         drive.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         drive.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         testTraject = drive.actionBuilder(drive.pose)
-                // .lineToX(-42) // use for driving 20 ines from -62x
-                .turn(Math.toRadians(90)) // use for turning 90 degrees from current heading
-                .waitSeconds(2)
+                .lineToX(-12) // use for driving 20 inches from -62x
+                //.turn(Math.toRadians(90)) // use for turning 90 degrees from current heading
                 .build();
     }
 
@@ -160,9 +164,10 @@ public class TuningTest extends OpMode {
     @Override
     public void start() {
         intake.Init(hardwareMap);
-
+        long startTime = System.currentTimeMillis();
         Actions.runBlocking(testTraject);
-
+        long stopTime = System.currentTimeMillis();
+        elapsedTime = stopTime - startTime;
     }
     @SuppressLint("DefaultLocale")
     @Override
@@ -173,6 +178,7 @@ public class TuningTest extends OpMode {
         PoseX.addData("X: ", String.format("%f2.3 in", drive.pose.position.x));
         PoseY.addData("Y: ", String.format("%f2.3 in", drive.pose.position.y));
         PoseHeading.addData("Heading: ", String.format("%f3.2 degrees", Math.toDegrees(drive.pose.heading.toDouble())));
+        TimeSec.addData("Time: ", elapsedTime + " ms");
         drive.setPowersFeildCentric(new PoseVelocity2d(
                 new Vector2d(
                         currGamepad1.left_stick_x,
