@@ -195,7 +195,7 @@ public class TestAuto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-47.3, -33.4), Math.toRadians(62.9))
 
                 .stopAndAdd(new InitPos())
-                .waitSeconds(.500)
+
 
                 .strafeToLinearHeading(new Vector2d(-32.7, -39.8), Math.toRadians(125.8))
                 .stopAndAdd(new SweepPos())
@@ -203,7 +203,6 @@ public class TestAuto extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-47.3, -42.5), Math.toRadians(62.6))
 
                 .stopAndAdd(new InitPos())
-                .waitSeconds(.500)
 
                 .strafeToLinearHeading(new Vector2d(-30.1, -46.9), Math.toRadians(117))
                 .stopAndAdd(new SweepPos())

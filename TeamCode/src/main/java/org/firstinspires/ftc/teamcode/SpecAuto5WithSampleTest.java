@@ -104,6 +104,19 @@ public class SpecAuto5WithSampleTest extends LinearOpMode {
         }
     }
 
+    public class HangSpecimen implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if(clawSlide.GetExtendedInches() == 12.4) {
+                specimenGrabber.Open();
+                return false;
+            }
+            else {
+                clawSlide.MoveTo(12.4, 1.0);
+                return true;
+            }
+        }
+    }
     public class LiftToHookPosition implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
@@ -198,23 +211,22 @@ public class SpecAuto5WithSampleTest extends LinearOpMode {
 
                 .splineToLinearHeading(new Pose2d(-32.7, -31.5, Math.toRadians(128.8)), Math.toRadians(128.8))
                 .stopAndAdd(new SweepPos())
-                .waitSeconds(.500)
+                .waitSeconds(.350)
                 .strafeToLinearHeading(new Vector2d(-47.3, -33.4), Math.toRadians(62.9))
 
                 .stopAndAdd(new InitPos())
-                .waitSeconds(.500)
+
 
                 .strafeToLinearHeading(new Vector2d(-32.7, -39.8), Math.toRadians(125.8))
                 .stopAndAdd(new SweepPos())
-                .waitSeconds(.500)
+                .waitSeconds(.350)
                 .strafeToLinearHeading(new Vector2d(-47.3, -42.5), Math.toRadians(62.6))
 
                 .stopAndAdd(new InitPos())
-                .waitSeconds(.500)
 
                 .strafeToLinearHeading(new Vector2d(-30.1, -46.9), Math.toRadians(117))
                 .stopAndAdd(new SweepPos())
-                .waitSeconds(.500)
+                .waitSeconds(.350)
                 .strafeToLinearHeading(new Vector2d(-47.8, -44.1), Math.toRadians(60))
 
                 .stopAndAdd(new ParallelAction(
@@ -286,7 +298,9 @@ public class SpecAuto5WithSampleTest extends LinearOpMode {
 
                 //Go to bucket
                 .stopAndAdd(new LiftToBucket())
-                .strafeToLinearHeading(new Vector2d(-56.93, 54.84), Math.toRadians(131.1))
+                .strafeToLinearHeading(new Vector2d(-55.93, 60.34), Math.toRadians(137.4))
+                .waitSeconds(.150)
+                .stopAndAdd(new OpenGrabber())
                 .waitSeconds(4)
                 .build();
 
