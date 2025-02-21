@@ -161,7 +161,7 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
 
                 .stopAndAdd(new InitPos())
 
-                .strafeToLinearHeading(new Vector2d(-31.8, -49.0), Math.toRadians(128.8))
+                .strafeToLinearHeading(new Vector2d(-31.8, -47.0), Math.toRadians(128.8))
                 .stopAndAdd(new SweepPos())
                 .waitSeconds(.350)
                 .strafeToLinearHeading(new Vector2d(-48.0, -46.5), Math.toRadians(54.0))
@@ -173,11 +173,79 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
                                 )
                         )
                 )
+
                 //grab
                 .strafeToSplineHeading(new Vector2d(-62, -36.5), Math.toRadians(180))
+                .waitSeconds(.300)
                 .stopAndAdd(new CloseGrabber())
                 .waitSeconds(.300)
                 .stopAndAdd(new LiftToTopBar())
+
+                // Hang 1
+                .strafeToLinearHeading(new Vector2d(-32.5, 0), Math.toRadians(-0.1))
+                .stopAndAdd(new LiftToBottom())
+                .waitSeconds(.300)
+                .stopAndAdd(new OpenGrabber()) // lets go of specimen
+
+                //grab
+                .strafeToSplineHeading(new Vector2d(-62, -36.5), Math.toRadians(180))
+                .waitSeconds(.300)
+                .stopAndAdd(new CloseGrabber())
+                .waitSeconds(.300)
+                .stopAndAdd(new LiftToTopBar())
+
+                // Hang 2
+                .strafeToLinearHeading(new Vector2d(-32.5, -1), Math.toRadians(-0.1))
+                .stopAndAdd(new LiftToBottom())
+                .waitSeconds(.300)
+                .stopAndAdd(new OpenGrabber()) // lets go of specimen
+
+                //grab
+                .strafeToLinearHeading(new Vector2d(-62,-38.4), Math.toRadians(180))
+                .waitSeconds(.300)
+                .stopAndAdd(new CloseGrabber())
+                .waitSeconds(.300)
+                .stopAndAdd(new LiftToTopBar())
+
+
+                // Hang 3
+                .strafeToLinearHeading(new Vector2d(-32.5, -2), Math.toRadians(-0.1))
+                .stopAndAdd(new LiftToBottom())
+                .waitSeconds(.300)
+                .stopAndAdd(new OpenGrabber()) // lets go of specimen
+
+
+                //grab
+                .strafeToLinearHeading(new Vector2d(-62,-38.4), Math.toRadians(180))
+                .waitSeconds(.300)
+                .stopAndAdd(new CloseGrabber())
+                .waitSeconds(.300)
+                .stopAndAdd(new LiftToTopBar())
+
+
+                // Hang 4
+                .strafeToLinearHeading(new Vector2d(-32.5, -3), Math.toRadians(-0.1))
+                .stopAndAdd(new LiftToBottom())
+                .waitSeconds(.300)
+                .stopAndAdd(new OpenGrabber()) // lets go of specimen
+
+
+                //grab
+                .strafeToLinearHeading(new Vector2d(-62,-38.4), Math.toRadians(180))
+                .waitSeconds(.300)
+                .stopAndAdd(new CloseGrabber())
+                .waitSeconds(.300)
+                .stopAndAdd(new LiftToTopBar())
+
+
+                // Hang 5
+                .strafeToLinearHeading(new Vector2d(-32.5, -4), Math.toRadians(-0.1))
+                .stopAndAdd(new LiftToBottom())
+                .waitSeconds(.300)
+                .stopAndAdd(new OpenGrabber()) // lets go of specimen
+
+                //grab
+                .strafeToLinearHeading(new Vector2d(-62,-38.4), Math.toRadians(0))
 
                 .waitSeconds(4)
                 .build();

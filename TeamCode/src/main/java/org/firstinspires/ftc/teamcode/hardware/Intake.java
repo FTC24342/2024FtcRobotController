@@ -103,7 +103,7 @@ public class Intake {
     }
     public void intakeSweep() {
         axis1.setPosition(0.805000);
-        axis2.setPosition(1.0);
+        axis2.setPosition(0.95);
     }
     public void goToInit() {
         axis1.setPosition(axis1Init);
