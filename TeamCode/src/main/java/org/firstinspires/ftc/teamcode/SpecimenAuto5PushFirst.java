@@ -153,7 +153,6 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
 
                 .stopAndAdd(new InitPos())
 
-
                 .strafeToLinearHeading(new Vector2d(-31.8, -40.1), Math.toRadians(128.8))
                 .stopAndAdd(new SweepPos())
                 .waitSeconds(.350)
