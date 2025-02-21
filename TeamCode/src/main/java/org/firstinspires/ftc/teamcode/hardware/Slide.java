@@ -67,7 +67,7 @@ public class Slide {
     }
 
     public double GetExtendedInches() {
-        return motor.getCurrentPosition()*ticksPerInch;
+        return motor.getCurrentPosition()/ticksPerInch;
     }
 
     public void MoveTo(double inches, double power) {

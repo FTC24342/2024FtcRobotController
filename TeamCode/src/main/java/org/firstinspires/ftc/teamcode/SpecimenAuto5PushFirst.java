@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -18,6 +19,8 @@ import org.firstinspires.ftc.teamcode.hardware.IntakeSlide;
 import org.firstinspires.ftc.teamcode.hardware.Slide;
 import org.firstinspires.ftc.teamcode.hardware.SpecimenGrabber;
 import org.firstinspires.ftc.teamcode.hardware.Sweeper;
+
+import java.util.Arrays;
 
 
 @Autonomous(name="5 specimen auto push first", group = "./test")
@@ -128,7 +131,7 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
     public void runOpMode()  throws InterruptedException
     {
         // run once when init is pressed
-        drive = new MecanumDrive(this.hardwareMap, new Pose2d(-62, -23, Math.toRadians(180)));
+        drive = new MecanumDrive(this.hardwareMap, new Pose2d(-62, -23, Math.toRadians(180))); //x: -62, y: -23, h: Radians(180)
         clawSlide.Init(hardwareMap);
         intakeSlide.Init(hardwareMap);
         specimenGrabber.Init(hardwareMap);
@@ -143,66 +146,45 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
         // Delcare Trajectory as such
         Action TrajectoryAction1 = drive.actionBuilder(drive.pose)
                 .stopAndAdd(new SlideOut()) // extends slide to out position
-                .stopAndAdd(new SweepPos()) // moves intake to sweep position
-                .splineToLinearHeading(new Pose2d(-33.04, -25.66, Math.toRadians(125)), Math.toRadians(125)) // moves behind sample
-                .strafeToLinearHeading(new Vector2d(-31.87, -30.36), Math.toRadians(125)) // Scoot behind piece 1
-                .strafeToLinearHeading(new Vector2d(-52.47, -35.75), Math.toRadians(58)) // Push to observation zone
-                .strafeToLinearHeading(new Vector2d(-31.87, -30.36), Math.toRadians(125)) //Scoot behind piece 1
-                .strafeToLinearHeading(new Vector2d(-31.87, -39.03), Math.toRadians(125)) //Scoot behind piece 2
-                .strafeToLinearHeading(new Vector2d(-52.47, -42.42), Math.toRadians(58)) // Push to observation zone
-                .strafeToLinearHeading(new Vector2d(-31.87, -39.03), Math.toRadians(125)) // Scoot behind piece 2
-                .strafeToLinearHeading(new Vector2d(-31.87, -49.16), Math.toRadians(125)) // Scoot behind piece 3
-                .strafeToLinearHeading(new Vector2d(-52.47, -47.7), Math.toRadians(58)) // Push to observation zone // 49.93 old
-                .stopAndAdd(new OpenGrabber())
-                .stopAndAdd(new OpenGrabber())
-                .splineToLinearHeading(new Pose2d(-61.81, -38.87, Math.toRadians(179)), Math.toRadians(179))
+                .strafeToLinearHeading(new Vector2d(-34.8, -30.3), Math.toRadians(145))
+                .stopAndAdd(new SweepPos())
+                .waitSeconds(.350)
+                .strafeToLinearHeading(new Vector2d(-52.0, -28.3), Math.toRadians(73.0))
+
                 .stopAndAdd(new InitPos())
-                .stopAndAdd(new SlideIn())
 
+
+                .strafeToLinearHeading(new Vector2d(-31.8, -40.1), Math.toRadians(128.8))
+                .stopAndAdd(new SweepPos())
+                .waitSeconds(.350)
+                .strafeToLinearHeading(new Vector2d(-52.0, -40.1), Math.toRadians(73.0))
+
+                .stopAndAdd(new InitPos())
+
+                .strafeToLinearHeading(new Vector2d(-31.8, -49.0), Math.toRadians(128.8))
+                .stopAndAdd(new SweepPos())
+                .waitSeconds(.350)
+                .strafeToLinearHeading(new Vector2d(-48.0, -46.5), Math.toRadians(54.0))
+
+                .stopAndAdd(new ParallelAction(
+                                Arrays.asList(
+                                        new InitPos(),
+                                        new SlideIn()
+                                )
+                        )
+                )
+                //grab
+                .strafeToSplineHeading(new Vector2d(-62, -36.5), Math.toRadians(180))
                 .stopAndAdd(new CloseGrabber())
-                .waitSeconds(secondsToWaitBeforeClosingGrabber)
+                .waitSeconds(.300)
                 .stopAndAdd(new LiftToTopBar())
-                .strafeToLinearHeading(new Vector2d(-31.5, -2.1), Math.toRadians(0))
-                .stopAndAdd(new LiftToBottom())
-                .stopAndAdd(new OpenGrabber()) //open claw
-                //2 spec^
-
-                //start 3rd spec
-                .strafeToLinearHeading(new Vector2d(-62.5, -42.5), Math.toRadians(180)) // move to grab specimen from the wall
-                .stopAndAdd(new CloseGrabber())
-                .waitSeconds(secondsToWaitBeforeClosingGrabber)
-                .stopAndAdd(new LiftToTopBar())
-                .strafeToLinearHeading(new Vector2d(-31.5, -3.1), Math.toRadians(0))
-                .stopAndAdd(new LiftToBottom()) // lower the lift to hang
-                .stopAndAdd(new OpenGrabber()) //open claw
-                //3 spec^
-
-                // start 4th
-                .strafeToLinearHeading(new Vector2d(-62.5, -42.5), Math.toRadians(180)) // move to grab specimen from the wall
-                .stopAndAdd(new CloseGrabber())
-                .waitSeconds(secondsToWaitBeforeClosingGrabber)
-                .stopAndAdd(new LiftToTopBar())
-                .strafeToLinearHeading(new Vector2d(-31.5, -4.1), 0)
-                .stopAndAdd(new LiftToBottom()) // lower the lift to hang
-                .stopAndAdd(new OpenGrabber()) //open claw
-                //4 spec^
-
-                //start 5th
-                .strafeToLinearHeading(new Vector2d(-62.5, -42.5), Math.toRadians(180)) // move to grab specimen from the wall
-                .stopAndAdd(new CloseGrabber())
-                .waitSeconds(secondsToWaitBeforeClosingGrabber)
-                .stopAndAdd(new LiftToTopBar())
-                .strafeToLinearHeading(new Vector2d(-31.5, -5.1), 0)
-                .stopAndAdd(new LiftToHookPosition()) // lower the lift to hang
-                .stopAndAdd(new OpenGrabber()) //open claw
-
 
                 .waitSeconds(4)
                 .build();
 
         Actions.runBlocking(
                 new SequentialAction(
-                        new CloseGrabber()
+                        new OpenGrabber()
                 )
         );
 
