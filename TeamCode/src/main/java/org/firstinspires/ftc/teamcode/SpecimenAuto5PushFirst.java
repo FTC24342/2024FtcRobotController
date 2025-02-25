@@ -174,8 +174,9 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
                 )
 
                 //grab
+                .strafeToSplineHeading(new Vector2d(-58, -36.5), Math.toRadians(180))
                 .strafeToSplineHeading(new Vector2d(-62, -36.5), Math.toRadians(180))
-                .waitSeconds(.300)
+                .waitSeconds(.100)
                 .stopAndAdd(new CloseGrabber())
                 .waitSeconds(.300)
                 .stopAndAdd(new LiftToTopBar())
@@ -187,64 +188,68 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
                 .stopAndAdd(new OpenGrabber()) // lets go of specimen
 
                 //grab
-                .strafeToSplineHeading(new Vector2d(-62, -36.5), Math.toRadians(180))
-                .waitSeconds(.300)
+                .strafeToSplineHeading(new Vector2d(-58, -36.5), Math.toRadians(180))
+                .lineToX(-62)
+                .waitSeconds(.100)
                 .stopAndAdd(new CloseGrabber())
                 .waitSeconds(.300)
                 .stopAndAdd(new LiftToTopBar())
 
                 // Hang 2
-                .strafeToLinearHeading(new Vector2d(-32.5, -1), Math.toRadians(-0.1))
+                .strafeToLinearHeading(new Vector2d(-32.5, -2), Math.toRadians(-0.1))
                 .stopAndAdd(new LiftToBottom())
                 .waitSeconds(.300)
                 .stopAndAdd(new OpenGrabber()) // lets go of specimen
 
                 //grab
-                .strafeToLinearHeading(new Vector2d(-62,-38.4), Math.toRadians(180))
-                .waitSeconds(.300)
+                .strafeToSplineHeading(new Vector2d(-58, -36.5), Math.toRadians(180))
+                .lineToX(-62)
+                .waitSeconds(.100)
                 .stopAndAdd(new CloseGrabber())
                 .waitSeconds(.300)
                 .stopAndAdd(new LiftToTopBar())
 
 
                 // Hang 3
-                .strafeToLinearHeading(new Vector2d(-32.5, -2), Math.toRadians(-0.1))
+                .strafeToLinearHeading(new Vector2d(-32.5, -4), Math.toRadians(-0.1))
                 .stopAndAdd(new LiftToBottom())
                 .waitSeconds(.300)
                 .stopAndAdd(new OpenGrabber()) // lets go of specimen
 
 
                 //grab
-                .strafeToLinearHeading(new Vector2d(-62,-38.4), Math.toRadians(180))
-                .waitSeconds(.300)
+                .strafeToSplineHeading(new Vector2d(-58, -36.5), Math.toRadians(180))
+                .lineToX(-62)
+                .waitSeconds(.100)
                 .stopAndAdd(new CloseGrabber())
                 .waitSeconds(.300)
                 .stopAndAdd(new LiftToTopBar())
 
 
                 // Hang 4
-                .strafeToLinearHeading(new Vector2d(-32.5, -3), Math.toRadians(-0.1))
+                .strafeToLinearHeading(new Vector2d(-32.5, -6), Math.toRadians(-0.1))
                 .stopAndAdd(new LiftToBottom())
                 .waitSeconds(.300)
                 .stopAndAdd(new OpenGrabber()) // lets go of specimen
 
 
                 //grab
-                .strafeToLinearHeading(new Vector2d(-62,-38.4), Math.toRadians(180))
-                .waitSeconds(.300)
+                .strafeToSplineHeading(new Vector2d(-58, -36.5), Math.toRadians(180))
+                .lineToX(-62)
+                .waitSeconds(.100)
                 .stopAndAdd(new CloseGrabber())
                 .waitSeconds(.300)
                 .stopAndAdd(new LiftToTopBar())
 
 
                 // Hang 5
-                .strafeToLinearHeading(new Vector2d(-32.5, -4), Math.toRadians(-0.1))
+                .strafeToLinearHeading(new Vector2d(-32.5, -8), Math.toRadians(-0.1))
                 .stopAndAdd(new LiftToBottom())
                 .waitSeconds(.300)
                 .stopAndAdd(new OpenGrabber()) // lets go of specimen
 
-                //grab
-                .strafeToLinearHeading(new Vector2d(-62,-38.4), Math.toRadians(0))
+                //park
+                .strafeToLinearHeading(new Vector2d(-62,-36.5), Math.toRadians(0))
 
                 .waitSeconds(4)
                 .build();

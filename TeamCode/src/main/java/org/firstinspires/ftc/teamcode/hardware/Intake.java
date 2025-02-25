@@ -17,12 +17,12 @@ public class Intake {
     private CRServo right = null;
     private Double maxPickupMovement = .022;
     public IntakePositon currentPosition = IntakePositon.UNKNOWN;
-    public double axis1Init = 0.117222;
-    public double axis2Init = 0.323889;
-    public double axis1Drive = 0.147778;
-    public double axis2Drive = 0.446111;
-    public double axis1Pickup = 0.800556;
-    public double axis2Pickup = 0.501667;
+    public double axis1Init = 0.090000;
+    public double axis2Init = 0.271667;
+    public double axis1Drive = 0.135000;
+    public double axis2Drive = 0.385000;
+    public double axis1Pickup = 0.723333;
+    public double axis2Pickup = 0.491111;
     public double positionMargin = 0.005; //this is to allow for logical positions that can not be exactly meet in hardware
 
     public void Init(HardwareMap hardwareMap) {

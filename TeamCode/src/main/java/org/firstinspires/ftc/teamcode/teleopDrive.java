@@ -136,7 +136,6 @@ public class teleopDrive extends OpMode {
         currGamepad2.copy(gamepad2);
         specimanGrabber.Init(hardwareMap);
         intakeSlide.Init(hardwareMap);
-        specimanGrabber.Init(hardwareMap);
         clawSlide.Init(hardwareMap);
         sweeper.init(hardwareMap);
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
