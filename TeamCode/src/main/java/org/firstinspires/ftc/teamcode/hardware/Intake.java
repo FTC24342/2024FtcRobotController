@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 
 public class Intake {
     public enum IntakePositon {
-        UNKNOWN, PICKUP, DRIVE, Init, SWEEP
+        UNKNOWN, PICKUP, DRIVE, Init, SWEEPDOWN, SWEEPUP
     }
 
     public Servo axis1 = null;
@@ -23,6 +23,10 @@ public class Intake {
     public double axis2Drive = 0.385000;
     public double axis1Pickup = 0.723333;
     public double axis2Pickup = 0.491111;
+    public double axis1SweepDown = 0.805000;
+    public double axis2SweepDown = 0.970000;
+    public double axis1SweepUp = 0.703889;
+    public double axis2SweepUp = 0.970000;
     public double positionMargin = 0.005; //this is to allow for logical positions that can not be exactly meet in hardware
 
     public void Init(HardwareMap hardwareMap) {
@@ -101,10 +105,16 @@ public class Intake {
         left.setPower(0);
         right.setPower(0);
     }
-    public void intakeSweep() {
-        axis1.setPosition(0.805000);
-        axis2.setPosition(0.95);
+    public void intakeSweepDown() {
+        axis1.setPosition(axis1SweepDown);
+        axis2.setPosition(axis2SweepDown);
     }
+
+    public void intakeSweepUp() {
+        axis1.setPosition(axis1SweepUp);
+        axis2.setPosition(axis2SweepUp);
+    }
+
     public void goToInit() {
         axis1.setPosition(axis1Init);
         axis2.setPosition(axis2Init);

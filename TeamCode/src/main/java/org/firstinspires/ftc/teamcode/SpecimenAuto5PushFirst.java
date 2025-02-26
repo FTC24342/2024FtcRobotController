@@ -111,10 +111,18 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
 
     }
 
-    public class SweepPos implements Action {
+    public class SweepDownPos implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intake.intakeSweep();
+            intake.intakeSweepDown();
+            return false;
+        }
+    }
+
+    public class SweepUpPos implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            intake.intakeSweepUp();
             return false;
         }
     }
@@ -147,21 +155,21 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
         Action TrajectoryAction1 = drive.actionBuilder(drive.pose)
                 .stopAndAdd(new SlideOut()) // extends slide to out position
                 .strafeToLinearHeading(new Vector2d(-34.8, -30.3), Math.toRadians(145))
-                .stopAndAdd(new SweepPos())
+                .stopAndAdd(new SweepDownPos())
                 .waitSeconds(.350)
                 .strafeToLinearHeading(new Vector2d(-52.0, -28.3), Math.toRadians(73.0))
 
-                .stopAndAdd(new InitPos())
+                .stopAndAdd(new SweepUpPos())
 
                 .strafeToLinearHeading(new Vector2d(-31.8, -40.1), Math.toRadians(128.8))
-                .stopAndAdd(new SweepPos())
+                .stopAndAdd(new SweepDownPos())
                 .waitSeconds(.350)
                 .strafeToLinearHeading(new Vector2d(-52.0, -40.1), Math.toRadians(73.0))
 
-                .stopAndAdd(new InitPos())
+                .stopAndAdd(new SweepUpPos())
 
-                .strafeToLinearHeading(new Vector2d(-31.8, -47.0), Math.toRadians(128.8))
-                .stopAndAdd(new SweepPos())
+                .strafeToLinearHeading(new Vector2d(-31.8, -50.0), Math.toRadians(128.8))
+                .stopAndAdd(new SweepDownPos())
                 .waitSeconds(.350)
                 .strafeToLinearHeading(new Vector2d(-48.0, -46.5), Math.toRadians(54.0))
 

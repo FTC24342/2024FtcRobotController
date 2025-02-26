@@ -175,7 +175,7 @@ public class teleopDrive extends OpMode {
     public void hangSpecimen() {
         try {
             clawSlide.MoveToWallPickupPosition(1.0);
-            Thread.sleep(250);
+            Thread.sleep(300);
             specimanGrabber.Open();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

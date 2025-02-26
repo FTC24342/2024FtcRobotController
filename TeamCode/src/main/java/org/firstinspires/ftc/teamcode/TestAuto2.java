@@ -149,7 +149,7 @@ public class TestAuto2 extends LinearOpMode {
     public class SweepPos implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            intake.intakeSweep();
+            intake.intakeSweepDown();
             return false;
         }
     }

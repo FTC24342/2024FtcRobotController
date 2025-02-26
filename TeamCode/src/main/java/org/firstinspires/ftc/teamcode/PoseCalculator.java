@@ -64,13 +64,14 @@ public class PoseCalculator extends OpMode {
             else if(desiredPosition == Intake.IntakePositon.PICKUP || desiredPosition == Intake.IntakePositon.Init) {
                 desiredPosition = Intake.IntakePositon.DRIVE;
             }
-            else if (desiredPosition == Intake.IntakePositon.SWEEP) {
-                desiredPosition = Intake.IntakePositon.Init;
-            }
         }
         if (currGamepad1.b && !prevGamepad1.b) {
-            desiredPosition = Intake.IntakePositon.SWEEP;
-
+            if (desiredPosition == Intake.IntakePositon.SWEEPDOWN) {
+                desiredPosition = Intake.IntakePositon.SWEEPUP;
+            }
+            else {
+                desiredPosition = Intake.IntakePositon.SWEEPDOWN;
+            }
         }
 
         //send intake commands based on desired state
@@ -78,10 +79,12 @@ public class PoseCalculator extends OpMode {
             intake.goToDrive();
         } else if (desiredPosition == Intake.IntakePositon.PICKUP) {
             intake.goToPickup();
-        } else if (desiredPosition == Intake.IntakePositon.SWEEP) {
-            intake.intakeSweep();
-
+        } else if (desiredPosition == Intake.IntakePositon.SWEEPDOWN) {
+            intake.intakeSweepDown();
+        } else if (desiredPosition == Intake.IntakePositon.SWEEPUP) {
+            intake.intakeSweepUp();
         }
+
 
 
         //in/out/stop of sample
