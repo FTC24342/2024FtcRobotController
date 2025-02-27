@@ -154,23 +154,24 @@ public class SpecimenAuto5PushFirst extends LinearOpMode {
         // Delcare Trajectory as such
         Action TrajectoryAction1 = drive.actionBuilder(drive.pose)
                 .stopAndAdd(new SlideOut()) // extends slide to out position
+                .stopAndAdd(new SweepUpPos())
                 .strafeToLinearHeading(new Vector2d(-34.8, -30.3), Math.toRadians(145))
                 .stopAndAdd(new SweepDownPos())
-                .waitSeconds(.350)
+                .waitSeconds(.150)
                 .strafeToLinearHeading(new Vector2d(-52.0, -28.3), Math.toRadians(73.0))
 
                 .stopAndAdd(new SweepUpPos())
 
                 .strafeToLinearHeading(new Vector2d(-31.8, -40.1), Math.toRadians(128.8))
                 .stopAndAdd(new SweepDownPos())
-                .waitSeconds(.350)
+                .waitSeconds(.150)
                 .strafeToLinearHeading(new Vector2d(-52.0, -40.1), Math.toRadians(73.0))
 
                 .stopAndAdd(new SweepUpPos())
 
                 .strafeToLinearHeading(new Vector2d(-31.8, -50.0), Math.toRadians(128.8))
                 .stopAndAdd(new SweepDownPos())
-                .waitSeconds(.350)
+                .waitSeconds(.150)
                 .strafeToLinearHeading(new Vector2d(-48.0, -46.5), Math.toRadians(54.0))
 
                 .stopAndAdd(new ParallelAction(
